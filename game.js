@@ -4,6 +4,7 @@ let queryVars = {};
 for (let q of queryData) {
     queryVars[q[1]] = q[2];
 }
+let pageParams = new URLSearchParams(window.location.search);
 
 import "./quickElement.js";
 import { DialogBox } from "./dialogBox.js";
@@ -19,21 +20,33 @@ async function init() {
     wordList = WordList.fromArray((await wlr.text()).split(/\r\n|\r|\n/g));
     commonWordList = WordList.fromArray((await cwlr.text()).split(/\r\n|\r|\n/g));
     let gameState = window.localStorage.getItem("gameState");
+    let div = document.getElementById("game");
     if (gameState) {
         let parsedData = JSON.parse(gameState);
         // console.log(parsedData);
         if (parsedData.expire > Date.now()) {
             let buffer = await (await fetch(`data:application/octet-stream;base64,${parsedData.state}`)).arrayBuffer();
             // console.log(buffer)
-            let div = document.getElementById("game");
             div.innerHTML = "";
             MultiWordGame.fromGameState(div,buffer);
         } else {
             localStorage.removeItem("gameState");
             generateMainPage();
         }
-        
-        
+    } else if (pageParams.get("qg")) {
+        console
+        switch (pageParams.get("qg")) {
+            case "normal":
+                div.innerHTML = "";
+                startGame(false);
+                break;
+            case "hard":
+                div.innerHTML = "";
+                startGame(false,true);
+                break;
+            default:
+                generateMainPage();
+        }
     } else {
         generateMainPage();
     }
@@ -497,7 +510,7 @@ class MultiWordGame {
         this.guessContainer.innerHTML = "";
         for (let x = 0; x < 5; x++) {
             this.guessContainer.createChildNode("div",{class:"guessLetter" + (this.currentGuess.length == x+1 ? " letterInp" : "")},(div)=>{
-                div.createChildNode("div",this.currentGuess[x] ? this.currentGuess[x] : " ")
+                div.createChildNode("div",{style:this.currentGuess[x] ? "" : "color:transparent;"},this.currentGuess[x] ? this.currentGuess[x] : "_")
             });
         }
     }
@@ -631,7 +644,7 @@ class MultiWordGame {
             replayMode:true,
             startOnCreation:true
         }
-        console.log(gameSettings)
+        // console.log(gameSettings)
         let game = new MultiWordGame(elem,gameSettings);
         window.setTimeout(()=>{
             game.keyHandler({keyCode:settings[7]})
@@ -702,14 +715,14 @@ class WordGame {
         if (this.solved) {
             this.element.classList.add("solved");
         }
-        this.guessesElement.insertBefore(guessdata.buildElement(), this.guessesElement.children[0]);
+        this.guessesElement.insertBefore(guessdata.buildElement(), this.guessesElement.children[1]);
         this.guessesElement.scrollTo(0,0);
         return guessdata;
     }
     buildElements() {
         this.element.createChildNode("div",{class:"wordGameIndex"},(this.index+1).toString());
-        this.hintsElement = this.element.createChildNode("div",{class:"hintsElement"});
         this.guessesElement = this.element.createChildNode("div",{class:"guessesContainer"});
+        this.hintsElement = this.guessesElement.createChildNode("div",{class:"hintsElement"});
     }
     buildHintTracker() {
         this.hintsElement.innerHTML = "";
@@ -946,11 +959,11 @@ function createReplayData(gameState) {
 
 async function parseReplayData(buffer) {
     if (!buffer) return false;
-    console.log(buffer)
+    // console.log(buffer)
     let settingsView = new DataView(buffer,1,19);
-    console.log(new Uint8Array(settingsView.buffer))
+    // console.log(new Uint8Array(settingsView.buffer))
     let replayView = new DataView(buffer,20,buffer.byteLength-20);
-    console.log(replayView.byteLength)
+    // console.log(replayView.byteLength)
     let returnArray = [];
     returnArray.push(
         settingsView.getUint32(0,true),                     // seed
@@ -970,7 +983,7 @@ async function parseReplayData(buffer) {
         x += 4;
         returnArray.push(replayView.getUint8(x++))
     }
-    console.log(returnArray)
+    // console.log(returnArray)
     return Array.from(returnArray)
 }
 

@@ -113,6 +113,7 @@ button:hover {
     border-radius: 10px 10px 0px 0px;
     bottom: 0;
     z-index: 1;
+    box-shadow: #0007 0 0 10px;
 }
 .keyboardHeader {
     display: flex;
@@ -122,7 +123,7 @@ button:hover {
     display: flex;
     justify-content: center;
 }
-.guessContainer {
+/* .guessContainer {
     display: flex;
     justify-content: center;
     position: fixed;
@@ -132,21 +133,54 @@ button:hover {
     background: var(--theme-background-base);
     padding: 2px 0;
 }
+*/
 .guessLetter {
     background-color: var(--theme-background-element);
-    display: inline-block;
-    width: 100px;
-    height: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     border-radius: 10px;
     margin: 1px;
-    font-size: 64pt;
-    line-height: 100px;
     text-align: center;
     font-weight: 500;
-    position: relative;
-    bottom: 0px;
     user-select: none;
+    position: relative;
+} 
+.guessContainer {
+    display: grid;
+    width: 100%;
+    max-width: 600px;
+    margin: auto;
+    position: sticky;
+    z-index:100;
+    top:0px;
+    font-size:92pt;
+    grid: "a a a a a" 1em;
+    container: guesscontainer / size;
+    background-color: var(--theme-background-base);
+    height:120px;
 }
+@media screen and (max-width:600px) {
+    .guessContainer {
+        width:100vw;
+        height:20vw;
+    }
+    .guessLetter {
+        width: calc(20vw-2px);
+        height: 20vw;
+        font-size:20vw;
+    }
+}
+/* @container guesscontainer (max-width:600px) {
+    .guessContainer {
+        height: 20cqi;
+    }
+    .guessLetter {
+        width: 20cqi;
+        height: 20cqi;
+        font-size:17cqi;
+    }
+} */
 .unusedLettersContainer{
     display: flex;
     justify-content: center;
@@ -155,16 +189,12 @@ button:hover {
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
-    padding-top: 100px;
-    padding-bottom: 300px;
+    /* padding-top: 130px; */
+    padding-bottom: 175px;
 }
 .gameContainer {
     margin: 0 5px;
     width: 400px;
-    /* height: 400px; */
-    /* overflow-y: auto; */
-    /* -webkit-mask: linear-gradient(#000, #000, #0000);
-    mask: linear-gradient(#000, #000, #0000); */
 }
 .gameGuessContainer {
     height: 80px;
@@ -179,10 +209,13 @@ button:hover {
     font-size: 48pt;
     line-height: 75px;
 }
+.gameContainer.solved {
+    order: 1;
+}
 .guessesContainer {
-    height: 200px;
+    height: 300px;
     overflow-y: auto;
-    padding-bottom: 120px;
+    padding-bottom: 164px;
     box-sizing: border-box;
     -webkit-mask: linear-gradient(#000, #000, #0000);
     mask: linear-gradient(#000, #000, #0000);
@@ -212,8 +245,16 @@ button:hover {
 .used {
     opacity: 0.25;
 }
+.hintsElement {
+    position: sticky;
+    top: 0px;
+    z-index: 10;
+    background: var(--theme-background-base);
+}
 .hintsContainer {
     display: flex;
+    position: sticky;
+    top:2px;
     min-height: 54px;
     background: var(--theme-background-keyboard);
     border-radius: 20px;
@@ -221,7 +262,7 @@ button:hover {
 }
 .hintContainer {
     display: inline-flex;
-    width: 74.5px;
+    width: 20%;
     flex-wrap: wrap;
     margin: 2px;
     align-items: center;
@@ -252,10 +293,10 @@ button:hover {
     font-weight: 700;
 }
 .keyButton{
-    width: 37.5px;
-    height: 37.5px;
+    width: 35px;
+    height: 35px;
     font-size: 16pt;
-    line-height: 37.5px;
+    line-height: 35px;
     margin: 3px;
 }
 .keyButton:hover{
@@ -264,7 +305,7 @@ button:hover {
     cursor: pointer;
 }
 .wideKey {
-    width: 60px;
+    width: 55px;
 }
 .timer::before {
     content: "⏱️";
