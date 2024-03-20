@@ -154,6 +154,7 @@ button:hover {
     position: sticky;
     z-index:100;
     top:0px;
+    transform: translate(0,0);
     font-size:92pt;
     grid: "a a a a a" 1em;
     container: guesscontainer / size;
@@ -358,16 +359,16 @@ button:hover {
 
 @keyframes inpErr {
     from {
-        left:0px;
+        transform: translate(0,0);
     }
     20% {
-        left:20px;
+        transform: translate(20px,0);
     }
     60% {
-        left:-20px;
+        transform: translate(-20px,0);
     }
     to {
-        left:0px;
+        transform: translate(0,0);
     }
 }
 
