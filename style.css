@@ -243,9 +243,6 @@ button:hover {
     background-color: var(--theme-background-hint-incorrect);
     color:var(--theme-color-hint-incorrect);
 }
-.used {
-    opacity: 0.25;
-}
 .hintsElement {
     position: sticky;
     top: 0px;
@@ -293,17 +290,33 @@ button:hover {
     user-select: none;
     font-weight: 700;
 }
+.smallHint.used {
+    opacity: 0.25;
+}
 .keyButton{
     width: 35px;
     height: 35px;
     font-size: 16pt;
     line-height: 35px;
     margin: 3px;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 .keyButton:hover{
     color:var(--theme-color-hover);
     background:var(--theme-background-hover);
     cursor: pointer;
+}
+.keyButton.used:not(.keyButton.keyCorrect, .keyButton.keyHasLetter) {
+    opacity: 0.25;
+}
+.keyButton.keyCorrect {
+    border:2px solid var(--theme-background-hint-correct)
+}
+.keyButton.keyHasLetter {
+    border:2px solid var(--theme-background-hint-hasletter)
 }
 .wideKey {
     width: 55px;

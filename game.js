@@ -419,6 +419,7 @@ class MultiWordGame {
             let div = this.gamesContainer.createChildNode("div",{class:"gameContainer"})
             this.games.push(new WordGame(div,x,listToUse[x],this.guesses));
         }
+        this.buildUnusedLettersElements()
         if (!this.isReplay) {
             document.addEventListener("keydown",(e)=>{
                 this.keyHandler(e);
@@ -535,6 +536,19 @@ class MultiWordGame {
                     div.appendChild(this.timerElement);
                 });
             });
+            let hintData = {};
+            for (let game of this.games) {
+                // console.log(game)
+                if (game.solved) continue;
+                let { correctLetters, couldHaveLetters } = game.getLetterHintData();
+                for (let letter of correctLetters) {
+                    hintData[letter] = 2;
+                }
+                for (let letter of couldHaveLetters) {
+                    hintData[letter] = hintData[letter] || 1;
+                }
+            }
+            console.log(hintData)
             for (let row of rows) {
                 div.createChildNode("div",{class:"keyboardRow"},(div)=>{
                     for (let data of row) {
@@ -548,10 +562,18 @@ class MultiWordGame {
                                 if (!this.isReplay) this.keyHandler({keyCode:code});
                             })
                         }
+                        let keyButton = div.createChildNode("div",{class:"keyButton"},(div)=>{
+                            div.createChildNode("div",char);
+                            addEvent(div);
+                        });
                         if (!usedLetters.includes(char)) {
-                            div.createChildNode("div",{class:"keyButton unused"},char,addEvent);
+                            keyButton.classList.add("unused");
                         } else {
-                            div.createChildNode("div",{class:"keyButton used"},char,addEvent);
+                            keyButton.classList.add("used");
+                            // console.log(hintData[char])
+                            if (hintData[char]) {
+                                keyButton.classList.add(hintData[char] == 2 ? "keyCorrect" : "keyHasLetter");
+                            }
                         }
                     }
                 });
@@ -579,7 +601,7 @@ class MultiWordGame {
     initContainer() {
         this.guessContainer = this.container.createChildNode("div",{class:"guessContainer"});
         this.unusedLettersContainer = this.container.createChildNode("div",{class:"unusedLettersContainer"});
-        this.buildUnusedLettersElements();
+        // this.buildUnusedLettersElements();
         this.gamesContainer = this.container.createChildNode("div",{class:"gamesContainer"});
         this.buildGuessContainerElements();
         this.startTimer();
@@ -594,7 +616,7 @@ class MultiWordGame {
             hardMode:!!settings[2],
             customMode:!!settings[3],
             numWords:settings[5],
-            easyMode:!!settings[4],
+            easyMode:!!settings[4]
         }
         let game = new MultiWordGame(elem,gameSettings);
         // let game = new MultiWordGame(elem,Number(genData[3]),Number(genData[1]) == 1,genData[0],Number(genData[2]) == 1,false,false);
@@ -698,6 +720,7 @@ class WordGame {
                 }
                 let guessdata = this.appendGuess(guesses[x]);
                 this.guesses.unshift(guessdata);
+                if (this.solved) break;
             }
             this.buildHintTracker();
         }
@@ -727,36 +750,7 @@ class WordGame {
     buildHintTracker() {
         this.hintsElement.innerHTML = "";
         if (!this.solved) {
-            let correct = [[],[],[],[],[]];
-            let correctLetters = [];
-            let hasLetter = [[],[],[],[],[]];
-            let couldHave = [[],[],[],[],[]];
-            let incorrect = [[],[],[],[],[]];
-            for (let guess of this.guesses) {
-                for (let x = 0; x < 5; x++) {
-                    switch (guess[x].type) {
-                        case GuessData.CORRECT:
-                            if (!correct[x].includes(guess[x].letter)) {
-                                correct[x].push(guess[x].letter);
-                                correctLetters.push(guess[x].letter);
-                            }
-                            break;
-                        case GuessData.HAS_LETTER:
-                            if (!hasLetter[x].includes(guess[x].letter)) hasLetter[x].push(guess[x].letter);
-                            break;
-                        default:
-                            if (!incorrect[x].includes(guess[x].letter)) incorrect[x].push(guess[x].letter);
-                    }
-                }
-            }
-            for (let x = 0; x < 5; x++) {
-                for (let y = 0; y < 5; y++) {
-                    if (x == y) continue;
-                    for (let letter of hasLetter[y]) {
-                        if (!couldHave[x].includes(letter) && !hasLetter[x].includes(letter) && !incorrect[x].includes(letter)) couldHave[x].push(letter);
-                    }
-                }
-            }
+            let { correct, couldHave, correctLetters } = this.getLetterHintData();
             this.hintsElement.createChildNode("div",{class:"hintsContainer"},(div)=>{
                 for (let y = 0; y < 5; y++) {
                     div.createChildNode("div",{class:"hintContainer"},(div)=>{
@@ -775,6 +769,44 @@ class WordGame {
             });
         } 
     }
+    getLetterHintData() {
+        let correct = [[], [], [], [], []];
+        let correctLetters = [];
+        let couldHaveLetters = [];
+        let hasLetter = [[], [], [], [], []];
+        let couldHave = [[], [], [], [], []];
+        let incorrect = [[], [], [], [], []];
+        for (let guess of this.guesses) {
+            for (let x = 0; x < 5; x++) {
+                switch (guess[x].type) {
+                    case GuessData.CORRECT:
+                        if (!correct[x].includes(guess[x].letter)) {
+                            correct[x].push(guess[x].letter);
+                            correctLetters.push(guess[x].letter);
+                        }
+                        break;
+                    case GuessData.HAS_LETTER:
+                        if (!hasLetter[x].includes(guess[x].letter)) hasLetter[x].push(guess[x].letter);
+                        break;
+                    default:
+                        if (!incorrect[x].includes(guess[x].letter)) incorrect[x].push(guess[x].letter);
+                }
+            }
+        }
+        for (let x = 0; x < 5; x++) {
+            for (let y = 0; y < 5; y++) {
+                if (x == y) continue;
+                for (let letter of hasLetter[y]) {
+                    if (!couldHave[x].includes(letter) && !hasLetter[x].includes(letter) && !incorrect[x].includes(letter)) {
+                        couldHave[x].push(letter);
+                        if (!couldHaveLetters.includes(letter)) couldHaveLetters.push(letter);
+                    }
+                }
+            }
+        }
+        return { correct, couldHave, correctLetters, couldHaveLetters };
+    }
+
     getAnswer() {
         return this.solved ? this.#answer : this.solved;
     }
