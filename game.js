@@ -548,7 +548,7 @@ class MultiWordGame {
                     hintData[letter] = hintData[letter] || 1;
                 }
             }
-            console.log(hintData)
+            // console.log(hintData)
             for (let row of rows) {
                 div.createChildNode("div",{class:"keyboardRow"},(div)=>{
                     for (let data of row) {
@@ -906,8 +906,8 @@ function endGameDialog(gameState) {
 
 function formatTime(mills,useMills = true) {
     let hours = Math.floor(mills/1000/60/60);
-    let minutes = Math.floor(mills/1000/60) - (hours*60)
-    let seconds = Math.floor(mills/1000) - (minutes*60);
+    let minutes = Math.floor(mills/1000/60)%60;
+    let seconds = Math.floor(mills/1000)%60;
     let millis = mills.toString().slice(-3).slice(0,2);
     let str = `${mills >= (1000*60*60) ? hours.toString().padStart(2,"0") + ":" : ""}${mills >= (1000*60) ? minutes.toString().padStart(2,"0") + ":" : ""}${seconds.toString().padStart(2,"0")}${useMills ? "." + millis : ""}`
     return str;
