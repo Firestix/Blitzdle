@@ -15,6 +15,10 @@ export class WordList extends Array {
         }
         return words;
     }
+    static async fromURL(url) {
+        let wlRaw = await fetch(url).then(res=>res.text());
+        return WordList.fromArray(wlRaw.split(/\r\n|\r|\n/g));
+    }
     static fromArray(array) {
         return new WordList(...array);
     }
