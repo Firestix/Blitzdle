@@ -9,7 +9,6 @@ let pageParams = new URLSearchParams(window.location.search);
 import "./quickElement.js";
 import { DialogBox } from "./modules/dialogBox.js";
 import { MultiWordGame } from "./modules/MultiWordGame.js";
-import { BitArray } from "./modules/BitArray.js";
 import { isMobile } from "./modules/MobileRegex.js";
 
 let dialog;
