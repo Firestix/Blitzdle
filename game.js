@@ -398,7 +398,8 @@ function shareClipboard(gameState) {
     let startDate = new Date(gameState.startTime);
     let time = MultiWordGame.formatTime(gameState.finishTime - gameState.startTime);
     let hard = gameState.isHard ? "🔶" : gameState.isEasy ? "🟢" : "🟦";
-    let daily = `${hard}${gameState.isDaily ? "📆:" + startDate.getFullYear() + "-" + (startDate.getMonth()+1) + "-" + startDate.getDate() : gameState.isCustom ? "🔧" : "🎲"}`;
+    let platform = isMobile() ? "📱" : "💻";
+    let daily = `${hard}${platform}${gameState.isDaily ? "📆:" + startDate.getFullYear() + "-" + (startDate.getMonth()+1) + "-" + startDate.getDate() : gameState.isCustom ? "🔧" : "🎲"}`;
     let seeds = gameState.isDaily ? "" : `\n🌱:${gameState.gameSeed} (x${gameState.numWords})`;
     let newClip = `Blitzdle ${daily}
 ⏱️:${time}
