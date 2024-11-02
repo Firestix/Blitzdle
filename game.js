@@ -405,7 +405,7 @@ function shareClipboard(gameState) {
 ⏱️:${time}
 ❓:${gameState.guesses.length}
 🎯:${calculateAccuracy(gameState)}${seeds}
-https://firestix.github.io/Blitzdle/`;
+${window.location}`;
     navigator.permissions.query({name: "clipboard-write"}).then(result => {
         if (result.state == "granted" || result.state == "prompt") {
             navigator.clipboard.writeText(newClip).then(()=>{
