@@ -14,7 +14,7 @@
     ],
     "orientation":"portrait-primary",
     "start_url": "/Blitzdle/",
-    "display": "fullscreen",
+    "display": "standalone",
     "theme_color": "#cccccc",
     "background_color": "#222222",
     "scope": "/Blitzdle/"
