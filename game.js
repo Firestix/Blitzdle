@@ -25,7 +25,10 @@ async function init() {
             let buffer = await fetch(`data:application/octet-stream;base64,${parsedData.state}`).then(res=>res.arrayBuffer());
             // console.log(buffer)
             div.innerHTML = "";
-            MultiWordGame.fromGameState(div,buffer);
+            let mwg = MultiWordGame.fromGameState(div,buffer);
+            mwg.addEventListener("finished",(e)=>{
+                endGameDialog(e.detail.gameState);
+            }) 
         } else {
             localStorage.removeItem("gameState");
             generateMainPage();
@@ -117,14 +120,12 @@ function generateMainPage() {
     })
 }
 
-function setDailyDifficulty(div,difficulty) {
+async function setDailyDifficulty(div,difficulty) {
     let finishedGame = checkForFinishedGame(difficulty);
     if (finishedGame) {
-        if (confirm(`You've already completed today's ${difficulty} game. Come back tomorrow for a new game.\r\n\r\nWould you like to download the replay file for this game?`)){
-            fetch(`data:application/octet-stream;base64,${finishedGame.state}`).then(res=>res.arrayBuffer()).then(data=>{
-                downloadFile("game_" + (new Date().toISOString()).replaceAll(/:/g,"_") + ".replay",data);
-            })
-        }
+        let data = await fetch(`data:application/octet-stream;base64,${finishedGame.state}`).then(res=>res.arrayBuffer());
+        let gameState = await MultiWordGame.fromGameState(div,data,true);
+        finishedDailyGameDialog(gameState,difficulty);
     } else {
         div.innerHTML = "";
         startGame(true,difficulty=="expert",false,false,difficulty=="easy" ? 1 : false);
@@ -343,18 +344,7 @@ function endGameDialog(gameState) {
     dialog = new DialogBox({body:(div)=>{
         div.createChildNode("h2","GREAT!");
         div.createChildNode("div",{class:"statusContainer"},(div)=>{
-            div.createChildNode("div",{class:"stat"},(div)=>{
-                div.createChildNode("span","Time:");
-                div.createChildNode("span",MultiWordGame.formatTime(gameState.finishTime - gameState.startTime));
-            });
-            div.createChildNode("div",{class:"stat"},(div)=>{
-                div.createChildNode("span","Guesses:");
-                div.createChildNode("span",gameState.guesses.length.toString());
-            });
-            div.createChildNode("div",{class:"stat"},(div)=>{
-                div.createChildNode("span","Accuracy:");
-                div.createChildNode("span",calculateAccuracy(gameState));
-            });
+            createStatBlock(div,gameState)
         });
         div.createChildNode("h2","WORDS:");
         div.createChildNode("div",{class:"definitionsContainer"},(div)=>{
@@ -388,6 +378,53 @@ function endGameDialog(gameState) {
     return dialog;
 }
 
+function createStatBlock(div,gameState){
+    div.createChildNode("div",{class:"stat"},(div)=>{
+        div.createChildNode("span","Time:");
+        div.createChildNode("span",MultiWordGame.formatTime(gameState.finishTime));
+    });
+    div.createChildNode("div",{class:"stat"},(div)=>{
+        div.createChildNode("span","Guesses:");
+        div.createChildNode("span",gameState.guesses.length.toString());
+    });
+    div.createChildNode("div",{class:"stat"},(div)=>{
+        div.createChildNode("span","Accuracy:");
+        div.createChildNode("span",calculateAccuracy(gameState));
+    });
+}
+
+function finishedDailyGameDialog(gameState) {
+    console.log(gameState);
+    let hard = gameState.isHard ? "🔶" : gameState.isEasy ? "🟢" : "🟦";
+
+    dialog = new DialogBox({body:(div)=>{
+        div.createChildNode("h2",`${hard}📆 Game Finished`);
+        div.createChildNode("p","Come back tomorrow for a new daily game.")
+        div.createChildNode("p",`Game Started: ${new Date(gameState.startTime).toLocaleString("en-US")}`)
+        div.createChildNode("div",{class:"statusContainer"},(div)=>{
+            createStatBlock(div,gameState)
+        });
+    },buttons:(div)=>{
+        div.createChildNode("button",{class:"smallButton"},"Share",(button)=>{
+            button.addEventListener("click",()=>{
+                shareClipboard(gameState);
+            })
+        });
+        div.createChildNode("button",{class:"smallButton"},"Save Replay",(button)=>{
+            button.addEventListener("click",(e)=>{
+                downloadReplay(gameState);
+            })
+        });
+        div.createChildNode("button",{class:"smallButton"},"Menu",(button)=>{
+            button.addEventListener("click",(e)=>{
+                generateMainPage();
+                dialog.close(e);
+            })
+        });
+    },modal:true,openOnCreation:true});
+    return dialog;
+}
+
 function calculateAccuracy(gameState) {
     let enterKeys = gameState.replay.slice(12).filter((e,i)=>i%2).filter(e=>e==13).length+1;
     let acc = gameState.guesses.length / enterKeys * 100;
@@ -396,7 +433,7 @@ function calculateAccuracy(gameState) {
 
 function shareClipboard(gameState) {
     let startDate = new Date(gameState.startTime);
-    let time = MultiWordGame.formatTime(gameState.finishTime - gameState.startTime);
+    let time = MultiWordGame.formatTime(gameState.finishTime);
     let hard = gameState.isHard ? "🔶" : gameState.isEasy ? "🟢" : "🟦";
     let platform = isMobile() ? "📱" : "💻";
     let daily = `${hard}${platform}${gameState.isDaily ? "📆:" + startDate.getFullYear() + "-" + (startDate.getMonth()+1) + "-" + startDate.getDate() : gameState.isCustom ? "🔧" : "🎲"}`;

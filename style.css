@@ -210,6 +210,12 @@ button:hover {
     font-size: 48pt;
     line-height: 75px;
 }
+.exampleGame {
+    width: 395px;
+}
+.exampleGame .guessLetter {
+    display: inline-block;
+}
 .gameContainer.solved {
     order: 1;
 }

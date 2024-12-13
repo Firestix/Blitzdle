@@ -15,7 +15,6 @@ export class MultiWordGame extends EventTarget {
     guesses = [];
     currentGuess = "";
     startTime;
-    finishTime;
     gameStarted;
     gameFinished;
     gameSeed;
@@ -86,6 +85,10 @@ export class MultiWordGame extends EventTarget {
         }
 
     }
+    get finishTime() {
+        if (this.replay.length < 12) return 0;
+        return this.replay.at(-2);
+    }
     async guess() {
         if (this.currentGuess.length == 5 && !this.guesses.includes(this.currentGuess) && (await wordLists.completeWordList).includes(this.currentGuess)) {
             if (!this.gameStarted) {
@@ -99,7 +102,6 @@ export class MultiWordGame extends EventTarget {
                 g.guess(this.currentGuess);
             }
             if (this.games.filter(g => g.solved).length == this.games.length) {
-                this.finishTime = Date.now();
                 this.gameFinished = true;
                 localStorage.removeItem("gameState");
                 if (this.isDaily && !this.isReplay) {
@@ -244,7 +246,7 @@ export class MultiWordGame extends EventTarget {
             }
         }
         if (this.gameFinished) {
-            this.timerElement.innerHTML = MultiWordGame.formatTime(this.finishTime - this.startTime);
+            this.timerElement.innerHTML = MultiWordGame.formatTime(this.finishTime);
         } else {
             window.requestAnimationFrame(() => { this.updateTimer(); });
         }
@@ -257,7 +259,7 @@ export class MultiWordGame extends EventTarget {
         this.buildGuessContainerElements();
         this.startTimer();
     }
-    static async fromGameState(elem, gameState) {
+    static async fromGameState(elem, gameState, dataOnly = false) {
         let data = await MultiWordGame.parseReplayData(gameState);
         // console.log(data);
         let settings = data.splice(0, 12);
@@ -273,10 +275,18 @@ export class MultiWordGame extends EventTarget {
         // let game = new MultiWordGame(elem,Number(genData[3]),Number(genData[1]) == 1,genData[0],Number(genData[2]) == 1,false,false);
         game.replay = [...settings, ...data];
         game.startTime = settings[6];
-        let lettersTyped = [...settings.slice(7), 13, ...data.filter((e, i) => i % 2)];
         // console.log(lettersTyped)
-        let guesses = [];
+        let { guesses, currentGuess } = await MultiWordGame.generateGuesses(settings, data);
+        game.guesses = guesses;
+        game.currentGuess = currentGuess;
+        game.gameStarted = true;
+        if (!dataOnly) game.start();
+        return game;
+    }
+    static async generateGuesses(settings, data) {
         let currentGuess = "";
+        let lettersTyped = [...settings.slice(7), 13, ...data.filter((e, i) => i % 2)];
+        let guesses = [];
         for (let x = 0, xlen = lettersTyped.length; x < xlen; x++) {
             let code = lettersTyped[x];
             switch (code) {
@@ -298,12 +308,10 @@ export class MultiWordGame extends EventTarget {
                     }
             }
         }
-        game.guesses = guesses;
-        game.currentGuess = currentGuess;
-        game.gameStarted = true;
-        game.start();
+        return { guesses, currentGuess };
     }
-    static async fromReplay(elem, replay) {
+
+    static async fromReplay(elem, replay, dataOnly = false) {
         let data = await MultiWordGame.parseReplayData(replay);
         let settings = data.splice(0, 12);
         // console.log(settings)
@@ -315,34 +323,41 @@ export class MultiWordGame extends EventTarget {
             numWords: settings[5],
             easyMode: !!settings[4],
             replayMode: true,
-            startOnCreation: true
+            startOnCreation: !dataOnly
         };
         // console.log(gameSettings)
         let game = new MultiWordGame(elem, gameSettings);
-        window.setTimeout(() => {
-            game.keyHandler({ keyCode: settings[7] });
-        }, 150);
-        window.setTimeout(() => {
-            game.keyHandler({ keyCode: settings[8] });
-        }, 300);
-        window.setTimeout(() => {
-            game.keyHandler({ keyCode: settings[9] });
-        }, 450);
-        window.setTimeout(() => {
-            game.keyHandler({ keyCode: settings[10] });
-        }, 600);
-        window.setTimeout(() => {
-            game.keyHandler({ keyCode: settings[11] });
-        }, 750);
-        window.setTimeout(() => {
-            game.keyHandler({ keyCode: 13 });
-            for (let x = 0; x < data.length; x += 2) {
-                window.setTimeout(() => {
-                    game.keyHandler({ keyCode: data[x + 1] });
-                }, data[x]);
-                // console.log(`keypress queued for ${data[x]}`)
-            }
-        }, 900);
+        if (!dataOnly) {
+            window.setTimeout(() => {
+                game.keyHandler({ keyCode: settings[7] });
+            }, 150);
+            window.setTimeout(() => {
+                game.keyHandler({ keyCode: settings[8] });
+            }, 300);
+            window.setTimeout(() => {
+                game.keyHandler({ keyCode: settings[9] });
+            }, 450);
+            window.setTimeout(() => {
+                game.keyHandler({ keyCode: settings[10] });
+            }, 600);
+            window.setTimeout(() => {
+                game.keyHandler({ keyCode: settings[11] });
+            }, 750);
+            window.setTimeout(() => {
+                game.keyHandler({ keyCode: 13 });
+                for (let x = 0; x < data.length; x += 2) {
+                    window.setTimeout(() => {
+                        game.keyHandler({ keyCode: data[x + 1] });
+                    }, data[x]);
+                    // console.log(`keypress queued for ${data[x]}`)
+                }
+            }, 900);
+        } else {
+            game.replay = data;
+            let { guesses } = await MultiWordGame.generateGuesses(settings, data);
+            game.guesses = guesses;
+            game.gameFinished = true;
+        }
         return game;
     }
     static formatTime(mills, useMills = true) {
@@ -361,10 +376,12 @@ export class MultiWordGame extends EventTarget {
         let arrayBuffer = new ArrayBuffer(20+((replay.length-12)*5/2));
         let settingsData = new DataView(arrayBuffer,0,20);
         let replayData = new DataView(arrayBuffer,20,arrayBuffer.byteLength-20);
+        let bools = BitArray.from([replay[1],replay[2],replay[3],replay[4]]);
+        // console.log(bools)
         // console.log(replayData.byteLength)
         settingsData.setUint8(0,1)                                          // replay file version
         settingsData.setUint32(1,replay[0],true)                            // seed
-        settingsData.setUint8(5,BitArray.from([replay[1],replay[2],replay[3],replay[4]]).encode())   // isDaily, isHard, isCustom, isEasy
+        settingsData.setUint8(5,bools.encode())   // isDaily, isHard, isCustom, isEasy
         settingsData.setUint8(6,replay[5])                                  // numWords
         settingsData.setFloat64(7,replay[6],true)                           // timestamp of first guess
         settingsData.setUint8(15,replay[7])                                 // first guess charcodes (next 5)
