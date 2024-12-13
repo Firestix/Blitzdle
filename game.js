@@ -25,7 +25,7 @@ async function init() {
             let buffer = await fetch(`data:application/octet-stream;base64,${parsedData.state}`).then(res=>res.arrayBuffer());
             // console.log(buffer)
             div.innerHTML = "";
-            let mwg = MultiWordGame.fromGameState(div,buffer);
+            let mwg = await MultiWordGame.fromGameState(div,buffer);
             mwg.addEventListener("finished",(e)=>{
                 endGameDialog(e.detail.gameState);
             }) 
