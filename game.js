@@ -10,6 +10,7 @@ import "./quickElement.js";
 import { DialogBox } from "./modules/dialogBox.js";
 import { MultiWordGame } from "./modules/MultiWordGame.js";
 import { isMobile } from "./modules/MobileRegex.js";
+import { ReplayMap } from "./modules/Replay.js";
 
 let dialog;
 
@@ -20,12 +21,11 @@ async function init() {
     let div = document.getElementById("game");
     if (gameState) {
         let parsedData = JSON.parse(gameState);
-        // console.log(parsedData);
+        console.log(parsedData);
         if (parsedData.expire > Date.now()) {
-            let buffer = await fetch(`data:application/octet-stream;base64,${parsedData.state}`).then(res=>res.arrayBuffer());
-            // console.log(buffer)
+            let replayData = await ReplayMap.fromEncodedData(encodeBase64FromUrl(parsedData.state));
             div.innerHTML = "";
-            let mwg = await MultiWordGame.fromGameState(div,buffer);
+            let mwg = await MultiWordGame.fromReplayMap(div,replayData);
             mwg.addEventListener("finished",(e)=>{
                 endGameDialog(e.detail.gameState);
             }) 
@@ -51,6 +51,11 @@ async function init() {
     }
 }
 
+function encodeBase64FromUrl(str) {
+    let returnStr = str.replaceAll("-","+").replaceAll("_","/");
+    let neededPaddingChars = Math.abs(returnStr.length % 4 - 4) % 4;
+    return returnStr.padEnd(returnStr.length + neededPaddingChars,"=");
+}
 
 function generateMainPage() {
     let div = document.getElementById("game");
@@ -123,8 +128,8 @@ function generateMainPage() {
 async function setDailyDifficulty(div,difficulty) {
     let finishedGame = checkForFinishedGame(difficulty);
     if (finishedGame) {
-        let data = await fetch(`data:application/octet-stream;base64,${finishedGame.state}`).then(res=>res.arrayBuffer());
-        let gameState = await MultiWordGame.fromGameState(div,data,true);
+        let replayData = await ReplayMap.fromEncodedData(encodeBase64FromUrl(finishedGame.state));
+        let gameState = await MultiWordGame.fromReplayMap(div,replayData,true);
         finishedDailyGameDialog(gameState,difficulty);
     } else {
         div.innerHTML = "";
@@ -296,9 +301,10 @@ function replayDialog() {
         reader.onloadend = (e)=>{
             let div = document.getElementById("game");
             div.innerHTML = "";
-            MultiWordGame.fromReplay(div,e.target.result).then((mwg)=>{
-                mwg.addEventListener("finished",(e)=>{
-                    endGameDialog(e.detail.gameState);
+            MultiWordGame.fromReplay(div,e.target.result).then((obj)=>{
+                obj.game.addEventListener("finished",async (e)=>{
+                    let gameFromReplay = await MultiWordGame.fromReplayMap(false,obj.replayData,true)
+                    endGameDialog(gameFromReplay);
                 })
             });
         }
@@ -381,7 +387,7 @@ function endGameDialog(gameState) {
 function createStatBlock(div,gameState){
     div.createChildNode("div",{class:"stat"},(div)=>{
         div.createChildNode("span","Time:");
-        div.createChildNode("span",MultiWordGame.formatTime(gameState.finishTime));
+        div.createChildNode("span",MultiWordGame.formatTime(gameState.replay.timeOfLastKeyPress()));
     });
     div.createChildNode("div",{class:"stat"},(div)=>{
         div.createChildNode("span","Guesses:");
@@ -426,14 +432,14 @@ function finishedDailyGameDialog(gameState) {
 }
 
 function calculateAccuracy(gameState) {
-    let enterKeys = gameState.replay.slice(12).filter((e,i)=>i%2).filter(e=>e==13).length+1;
+    let enterKeys = gameState.replay.actions.filter(v=>v[1].type == "key" && v[1].value == 13).length+1;
     let acc = gameState.guesses.length / enterKeys * 100;
     return acc.toFixed(1) + "%";
 }
 
 function shareClipboard(gameState) {
-    let startDate = new Date(gameState.startTime);
-    let time = MultiWordGame.formatTime(gameState.finishTime);
+    let startDate = new Date(gameState.replay.timestamp);
+    let time = MultiWordGame.formatTime(gameState.replay.timeOfLastKeyPress());
     let hard = gameState.isHard ? "🔶" : gameState.isEasy ? "🟢" : "🟦";
     let platform = isMobile() ? "📱" : "💻";
     let daily = `${hard}${platform}${gameState.isDaily ? "📆:" + startDate.getFullYear() + "-" + (startDate.getMonth()+1) + "-" + startDate.getDate() : gameState.isCustom ? "🔧" : "🎲"}`;
@@ -459,7 +465,7 @@ ${window.location}`;
 }
 
 function downloadReplay(gameState) {
-    downloadFile("game_" + (new Date().toISOString()).replaceAll(/:/g,"_") + ".replay",gameState.createReplayData())
+    downloadFile("game_" + (new Date().toISOString()).replaceAll(/:/g,"_") + ".replay",gameState.replay.encode())
 }
 
 function downloadFile(filename,data) {
