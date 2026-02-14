@@ -26,7 +26,6 @@ export const PARSERS = [
                 this.set(replayView.getUint32(x,true),{type:"key",value:replayView.getUint8(x+4)})
                 x += 5;
             }
-            console.log(this)
         },
         /**
          * @this ReplayMap

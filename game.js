@@ -21,7 +21,6 @@ async function init() {
     let div = document.getElementById("game");
     if (gameState) {
         let parsedData = JSON.parse(gameState);
-        console.log(parsedData);
         if (parsedData.expire > Date.now()) {
             let replayData = await ReplayMap.fromEncodedData(encodeBase64FromUrl(parsedData.state));
             div.innerHTML = "";
@@ -182,7 +181,6 @@ function customGameDialog() {
         });
     },modal:true,class:"dialogBox custom",openOnCreation:true});
     dialog.addEventListener("close",(e)=>{
-        // console.log(e.detail.usingEvent.target)
         if (e.detail.usingEvent.target.innerText == "Play") {
             let hardMode = Number(dialog.body.querySelector("#customWordList").value);
             let seed = dialog.body.querySelector("#customSeed").value == "" ? false : dialog.body.querySelector("#customSeed").value;
@@ -400,7 +398,6 @@ function createStatBlock(div,gameState){
 }
 
 function finishedDailyGameDialog(gameState) {
-    console.log(gameState);
     let hard = gameState.isHard ? "🔶" : gameState.isEasy ? "🟢" : "🟦";
 
     dialog = new DialogBox({body:(div)=>{

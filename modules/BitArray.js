@@ -1,14 +1,12 @@
 export class BitArray {
     length;
     constructor(num, bitLength) {
-        // console.log(num,bitLength)
         this.length = bitLength;
         let y = num;
         for (let x = 0; x < this.length; x++) {
             this[x] = !!(y & 1);
             y >>>= 1;
         }
-        // console.log(this);
     }
     encode() {
         let num = 0;
@@ -33,14 +31,11 @@ export class BitArray {
      * @param {*} thisArg 
      */
     static from(arrayLike, mapFn, thisArg) {
-        // console.log(arrayLike);
         let bitArray = new BitArray(0,arrayLike.length);
         if (!mapFn) mapFn = function(v,i){return v};
         for (let i = 0; i < arrayLike.length; i++) {
             bitArray[i] = !!(mapFn.call(thisArg || null, arrayLike[i], i));
-            // console.log(arrayLike[i],bitArray[i])
         }
-        // console.log(bitArray)
         return bitArray;
     }
 }

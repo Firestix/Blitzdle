@@ -114,7 +114,6 @@ export class MultiWordGame extends EventTarget {
         this.buildUnusedLettersElements();
     }
     keyHandler(e) {
-        // console.log(e)
         this.guessContainer.classList.remove("inpErr");
         if (!this.gameFinished) {
             if (this.gameStarted) {
@@ -124,13 +123,11 @@ export class MultiWordGame extends EventTarget {
         }
     }
     replayReaderHandler(e, key) {
-        // console.log(e.target.result)
         let gameStateObj = {
             expire: this.expire.getTime(),
             state: e.target.result.replace(/data:\S+\/\S+;base64,/,"").replaceAll("=","").replaceAll("+","-").replaceAll("/","_")
         };
         localStorage.setItem(key, JSON.stringify(gameStateObj));
-        // console.log(new Blob(Object.values(localStorage)).size)
     }
     modifyGuess(code) {
         switch (code) {
@@ -182,7 +179,6 @@ export class MultiWordGame extends EventTarget {
             });
             let hintData = {};
             for (let game of this.games) {
-                // console.log(game)
                 if (game.solved) continue;
                 let { correctLetters, couldHaveLetters } = game.getLetterHintData();
                 for (let letter of correctLetters) {
@@ -192,7 +188,6 @@ export class MultiWordGame extends EventTarget {
                     hintData[letter] = hintData[letter] || 1;
                 }
             }
-            // console.log(hintData)
             for (let row of rows) {
                 div.createChildNode("div", { class: "keyboardRow" }, (div) => {
                     for (let data of row) {
@@ -214,7 +209,6 @@ export class MultiWordGame extends EventTarget {
                             keyButton.classList.add("unused");
                         } else {
                             keyButton.classList.add("used");
-                            // console.log(hintData[char])
                             if (hintData[char]) {
                                 keyButton.classList.add(hintData[char] == 2 ? "keyCorrect" : "keyHasLetter");
                             }
@@ -303,7 +297,6 @@ export class MultiWordGame extends EventTarget {
             replayMode: true,
             startOnCreation: !dataOnly
         };
-        // console.log(gameSettings)
         let game = new MultiWordGame(elem, gameSettings);
         if (!dataOnly) {
             let firstGuess = replayData.firstGuess;
