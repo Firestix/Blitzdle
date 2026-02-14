@@ -316,8 +316,7 @@ function replayDialog() {
             div.innerHTML = "";
             MultiWordGame.fromReplay(div,e.target.result).then((obj)=>{
                 obj.game.addEventListener("finished",async (e)=>{
-                    let gameFromReplay = await MultiWordGame.fromReplayMap(false,obj.replayData,true)
-                    endGameDialog(gameFromReplay);
+                    endGameDialog(obj.game);
                 })
             });
         }
