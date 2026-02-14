@@ -18,6 +18,7 @@ export class MultiWordGame extends EventTarget {
     gameStarted;
     gameFinished;
     replay;
+    replayReader;
     timerElement;
     expire;
     constructor(elem, settings) {
