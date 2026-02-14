@@ -1,5 +1,14 @@
+/**
+ * @implements {ArrayLike<boolean>}
+ */
 export class BitArray {
+    /** @type {number} */
     length;
+    /**
+     * 
+     * @param {number} num 
+     * @param {number} bitLength 
+     */
     constructor(num, bitLength) {
         this.length = bitLength;
         let y = num;
@@ -8,6 +17,10 @@ export class BitArray {
             y >>>= 1;
         }
     }
+    /**
+     * 
+     * @returns {number}
+     */
     encode() {
         let num = 0;
         for (let x = this.length - 1; x >= 0; x--) {
@@ -26,8 +39,8 @@ export class BitArray {
     }
     /**
      * 
-     * @param {ArrayLike} arrayLike 
-     * @param {*} mapFn 
+     * @param {ArrayLike<boolean>} arrayLike 
+     * @param {(v:boolean,i:number)=>boolean} mapFn 
      * @param {*} thisArg 
      */
     static from(arrayLike, mapFn, thisArg) {

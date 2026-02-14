@@ -7,21 +7,40 @@ const wordLists = new GameWordLists();
 wordLists.loadWordLists()
 
 export class MultiWordGame extends EventTarget {
+    /** @type {Element} */
     container;
+    /** @type {HTMLDivElement} */
     guessContainer;
+    /** @type {HTMLDivElement} */
     unusedLettersContainer;
+    /** @type {HTMLDivElement} */
     gamesContainer;
+    /** @type {WordGame[]} */
     games = [];
+    /** @type {string[]} */
     guesses = [];
     currentGuess = "";
+    /** @type {number} */
     startTime;
+    /** @type {boolean} */
     gameStarted;
+    /** @type {boolean} */
     gameFinished;
+    /** @type {ReplayMap} */
     replay;
+    /** @type {boolean} */
     isReplay;
+    /** @type {FileReader} */
     replayReader;
+    /** @type {HTMLDivElement} */
     timerElement;
+    /** @type {Date} */
     expire;
+    /**
+     * 
+     * @param {Element} elem 
+     * @param {MultiWordGameSettings} settings 
+     */
     constructor(elem, settings) {
         super();
         let gameSettings = {
@@ -115,6 +134,10 @@ export class MultiWordGame extends EventTarget {
         if (!this.gameFinished && !this.isReplay) this.replayReader.readAsDataURL(new Blob([this.replay.encode()], { type: "application/octet-stream" }));
         this.buildUnusedLettersElements();
     }
+    /**
+     * 
+     * @param {KeyboardEvent} e 
+     */
     keyHandler(e) {
         this.guessContainer.classList.remove("inpErr");
         if (!this.gameFinished) {
@@ -124,6 +147,11 @@ export class MultiWordGame extends EventTarget {
             this.modifyGuess(e.keyCode);
         }
     }
+    /**
+     * 
+     * @param {ProgressEvent<FileReader>} e 
+     * @param {string} key 
+     */
     replayReaderHandler(e, key) {
         let gameStateObj = {
             expire: this.expire.getTime(),
@@ -131,17 +159,25 @@ export class MultiWordGame extends EventTarget {
         };
         localStorage.setItem(key, JSON.stringify(gameStateObj));
     }
+    /**
+     * 
+     * @param {number} code 
+     */
     modifyGuess(code) {
         switch (code) {
+            // Enter Key
             case 13:
                 this.guess();
                 break;
+            // Backspace Key
             case 8:
+            // Delete Key
             case 46:
                 if (this.currentGuess.length > 0) this.currentGuess = this.currentGuess.substring(0, this.currentGuess.length - 1);
                 this.buildGuessContainerElements();
                 break;
             default:
+                // Keys A-Z
                 if (code > 64 && code < 91) {
                     if (this.currentGuess.length < 5) {
                         this.currentGuess += String.fromCharCode(code);
@@ -248,6 +284,13 @@ export class MultiWordGame extends EventTarget {
         this.buildGuessContainerElements();
         this.startTimer();
     }
+    /**
+     * 
+     * @param {Element} elem 
+     * @param {ReplayMap} replayMap 
+     * @param {boolean} dataOnly 
+     * @returns 
+     */
     static async fromReplayMap(elem, replayMap, dataOnly) {
         let game = new MultiWordGame(elem, replayMap.settings);
         game.replay = replayMap;
@@ -259,6 +302,12 @@ export class MultiWordGame extends EventTarget {
         if (!dataOnly) game.start();
         return game;
     }
+    /**
+     * 
+     * @param {[number,number,number,number,number]} firstGuess 
+     * @param {[number,{type:"key",value:number}][]} data 
+     * @returns 
+     */
     static async generateGuesses(firstGuess, data) {
         let currentGuess = "";
         let lettersTyped = [...firstGuess, 13, ...data.filter(e=>e[1].type == "key").map(v=>v[1].value)];
@@ -286,7 +335,13 @@ export class MultiWordGame extends EventTarget {
         }
         return { guesses, currentGuess };
     }
-
+    /**
+     * 
+     * @param {Element} elem 
+     * @param {ArrayBuffer} replay 
+     * @param {boolean} dataOnly 
+     * @returns 
+     */
     static async fromReplay(elem, replay, dataOnly = false) {
         let replayData = new ReplayMap(replay);
         let gameSettings = {
@@ -324,6 +379,12 @@ export class MultiWordGame extends EventTarget {
         }
         return {game,replayData};
     }
+    /**
+     * 
+     * @param {number} mills 
+     * @param {boolean} useMills 
+     * @returns 
+     */
     static formatTime(mills, useMills = true) {
         let hours = Math.floor(mills / 1000 / 60 / 60);
         let minutes = Math.floor(mills / 1000 / 60) % 60;
@@ -333,3 +394,15 @@ export class MultiWordGame extends EventTarget {
         return str;
     }
 }
+
+/**
+ * @typedef {object} MultiWordGameSettings
+ * @prop {boolean} dailyMode
+ * @prop {boolean} hardMode
+ * @prop {boolean} easyMode
+ * @prop {boolean} customMode
+ * @prop {boolean} replayMode
+ * @prop {boolean} startOnCreation
+ * @prop {number} gameSeed
+ * @prop {number} numWords
+ */

@@ -50,6 +50,11 @@ async function init() {
     }
 }
 
+/**
+ * 
+ * @param {string} str 
+ * @returns 
+ */
 function encodeBase64FromUrl(str) {
     let returnStr = str.replaceAll("-","+").replaceAll("_","/");
     let neededPaddingChars = Math.abs(returnStr.length % 4 - 4) % 4;
@@ -124,6 +129,11 @@ function generateMainPage() {
     })
 }
 
+/**
+ * 
+ * @param {Element} div 
+ * @param {"easy" | "normal" | "expert"} difficulty 
+ */
 async function setDailyDifficulty(div,difficulty) {
     let finishedGame = checkForFinishedGame(difficulty);
     if (finishedGame) {
@@ -136,6 +146,11 @@ async function setDailyDifficulty(div,difficulty) {
     }
 }
 
+/**
+ * 
+ * @param {"easy" | "normal" | "expert"} type 
+ * @returns 
+ */
 function checkForFinishedGame(type) {
     let savedGame = localStorage.getItem(type);
     if (savedGame) {
@@ -310,6 +325,14 @@ function replayDialog() {
     file.click();
 }
 
+/**
+ * 
+ * @param {boolean} daily 
+ * @param {boolean} hardMode 
+ * @param {boolean} custom 
+ * @param {boolean} seed 
+ * @param {boolean} num 
+ */
 function startGame(daily,hardMode=false,custom=false,seed = false,num = false) {
     let gameSeed;
     let numWords = num;
@@ -335,15 +358,31 @@ function startGame(daily,hardMode=false,custom=false,seed = false,num = false) {
     }) 
 }
 
+/**
+ * 
+ * @param {number} x 
+ * @returns 
+ */
 function numWordsTransformFunc(x) {
     return Math.tan(x*2.5-1.15)+4.5
 }
 
+/**
+ * 
+ * @param {boolean} hardMode 
+ * @param {boolean} easyMode 
+ * @returns 
+ */
 function generateDailySeed(hardMode,easyMode) {
     let today = new Date();
     return (hardMode ? "1" : easyMode ? "2" : "") + today.getFullYear().toString() + (today.getMonth()+1).toString().padStart(2,"0") + today.getDate().toString().padStart(2,"0");
 }
 
+/**
+ * 
+ * @param {MultiWordGame} gameState 
+ * @returns 
+ */
 function endGameDialog(gameState) {
     dialog = new DialogBox({body:(div)=>{
         div.createChildNode("h2","GREAT!");

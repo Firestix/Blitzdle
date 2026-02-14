@@ -1,8 +1,21 @@
+/**
+ * @extends {Array<string>}
+ */
 export class WordList extends Array {
+    /**
+     * 
+     * @param  {...string} list 
+     */
     constructor(...list) {
         super();
         this.push(...list);
     }
+    /**
+     * 
+     * @param {number} n 
+     * @param {number} seed 
+     * @returns 
+     */
     randomize(n, seed = false) {
         let wordlist = new WordList(...this);
         if (!seed) seed = Date.now().toString();
@@ -15,10 +28,20 @@ export class WordList extends Array {
         }
         return words;
     }
+    /**
+     * 
+     * @param {string} url 
+     * @returns 
+     */
     static async fromURL(url) {
         let wlRaw = await fetch(url).then(res=>res.text());
         return WordList.fromArray(wlRaw.split(/\r\n|\r|\n/g));
     }
+    /**
+     * 
+     * @param {string[]} array 
+     * @returns 
+     */
     static fromArray(array) {
         return new WordList(...array);
     }

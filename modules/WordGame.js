@@ -1,12 +1,18 @@
 import { GuessData } from "./GuessData.js";
 
 export class WordGame {
+    /** @type {string} */
     #answer;
+    /** @type {number} */
     index;
+    /** @type {HTMLDivElement} */
     element;
+    /** @type {HTMLDivElement} */
     guessesElement;
+    /** @type {HTMLDivElement} */
     hintsElement;
     solved = false;
+    /** @type {GuessData[]} */
     guesses = [];
     /**
      * Creates a new instance of the word game.
@@ -30,6 +36,10 @@ export class WordGame {
             this.buildHintTracker();
         }
     }
+    /**
+     * 
+     * @param {string} word 
+     */
     guess(word) {
         if (word == this.#answer) {
             this.solved = true;
@@ -38,6 +48,11 @@ export class WordGame {
         this.guesses.unshift(guessdata);
         this.buildHintTracker();
     }
+    /**
+     * 
+     * @param {string} word 
+     * @returns 
+     */
     appendGuess(word) {
         let guessdata = new GuessData(this.#answer, word);
         if (this.solved) {

@@ -27,57 +27,67 @@ export class ReplayMap extends Map{
             firstGuess:this.firstGuess,
         }
     }
+    /** @type {number} */
     get seed() {
         return this.get("seed")
     }
     set seed(seed) {
         this.set("seed",seed)
     }
+    /** @type {boolean} */
     get isDaily() {
         return this.get("isDaily")
     }
     set isDaily(bool) {
         this.set("isDaily",bool)
     }
+    /** @type {boolean} */
     get isHard() {
         return this.get("isHard")
     }
     set isHard(bool) {
         this.set("isHard",bool)
     }
+    /** @type {boolean} */
     get isCustom() {
         return this.get("isCustom")
     }
     set isCustom(bool) {
         this.set("isCustom",bool)
     }
+    /** @type {boolean} */
     get isEasy() {
         return this.get("isEasy")
     }
     set isEasy(bool) {
         this.set("isEasy",bool)
     }
+    /** @type {number} */
     get numWords() {
         return this.get("numWords")
     }
     set numWords(num) {
         this.set("numWords",num)
     }
+    /** @type {number} */
     get timestamp() {
         return this.get("timestamp")
     }
     set timestamp(timestamp) {
         this.set("timestamp",timestamp)
     }
+    /** @type {[number,number,number,number,number]} */
     get firstGuess() {
         return this.get("firstGuess")
     }
     set firstGuess(str) {
         this.set("firstGuess",str)
     }
+    /** @type {[number,{type:"key",value:number}][]} */
     get actions() {
         return [...this.entries()].filter(v=>typeof v[0] === "number");
     }
+    /** @type {number[]} */
     get keyPressTimes() {
         return[...this.keys()].filter(v=>typeof v === "number").sort((a,b)=>a-b);
     }
@@ -120,6 +130,10 @@ export class ReplayMap extends Map{
         return byteArray.buffer;
     }
 
+    /**
+     * 
+     * @param {ArrayBuffer} buffer 
+     */
     decode(buffer) {
         if (!buffer || !(buffer instanceof ArrayBuffer)) throw "Could not read replay data";
         let headerBuffer = buffer.slice(0,REPLAY_HEADER.length+1)
@@ -138,8 +152,6 @@ export class ReplayMap extends Map{
         map.isCustom = obj.isCustom;
         map.isEasy = obj.isEasy;
         map.numWords = obj.numWords;
-        //map.settings.timestamp = obj.timestamp;
-        //map.settings.firstGuess = obj.firstGuess;
         return map;
     }
     timeOfLastKeyPress() {

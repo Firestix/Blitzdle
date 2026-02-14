@@ -1,4 +1,5 @@
 export class GuessData {
+    /** @type {[LetterData,LetterData,LetterData,LetterData,LetterData]} */
     #letterData = new Array(5);
     /**
      * Creates a new guess data instance.
@@ -7,6 +8,7 @@ export class GuessData {
      */
     constructor(answer, guess) {
         for (let x = 0; x < 5; x++) {
+            /** @type {LetterData} */
             let wordData = { letter: guess[x], type: GuessData.INCORRECT };
             if (guess[x] == answer[x]) {
                 wordData.type = GuessData.CORRECT;
@@ -25,6 +27,10 @@ export class GuessData {
         }
 
     }
+    /**
+     * 
+     * @returns {HTMLDivElement}
+     */
     buildElement() {
         let div = document.quickElement("div", { class: "gameGuessContainer" });
         for (let letter of this) {
@@ -36,7 +42,16 @@ export class GuessData {
         let x = 0;
         while (x < 5) yield this.#letterData[x++];
     }
+    /** @type {0} */
     static INCORRECT = 0;
+    /** @type {1} */
     static HAS_LETTER = 1;
+    /** @type {2} */
     static CORRECT = 2;
 }
+
+/**
+ * @typedef {object} LetterData
+ * @property {string} letter
+ * @property {0 | 1 | 2} type
+ */
