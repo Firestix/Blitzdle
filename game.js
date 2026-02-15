@@ -6,6 +6,8 @@ for (let q of queryData) {
 }
 let pageParams = new URLSearchParams(window.location.search);
 
+import { marked } from "https://cdn.jsdelivr.net/npm/marked/lib/marked.esm.js";
+
 import "./quickElement.js";
 import { DialogBox } from "./modules/dialogBox.js";
 import { MultiWordGame } from "./modules/MultiWordGame.js";
@@ -13,8 +15,6 @@ import { isMobile } from "./modules/MobileRegex.js";
 import { ReplayMap } from "./modules/Replay.js";
 
 let dialog;
-
-// let completedDailies = {normal:false,expert:false};
 
 async function init() {
     let gameState = window.localStorage.getItem("gameState");
@@ -209,94 +209,7 @@ function customGameDialog() {
 
 function howToPlayDialog() {
     dialog = new DialogBox({body:(div)=>{
-        div.createChildNode("h2","How to play");
-        div.createChildNode("h3","Goal")
-        div.createChildNode("p","Guess all of the 5 letter words as fast as possible.");
-        div.createChildNode("p","To make a guess, use the keyboard to enter a 5 letter word, then press enter. After making a guess, use the letter clues to refine your next guess. Solve all the word puzzles to win!")
-        div.createChildNode("h3","Letter Hints");
-        div.createChildNode("div",{class:"exampleGame"},(div)=>{
-            div.createChildNode("div",{class:"guessLetter correct"},'C');
-            div.createChildNode("div",{class:"guessLetter incorrect"},'R');
-            div.createChildNode("div",{class:"guessLetter incorrect"},'A');
-            div.createChildNode("div",{class:"guessLetter hasLetter"},'N');
-            div.createChildNode("div",{class:"guessLetter incorrect"},'E');
-        });
-        div.createChildNode("ul",(ul)=>{
-            ul.createChildNode("li","Dark Gray means that this letter is not in the word.")
-            ul.createChildNode("li","Yellow means that this letter is in the word, but it's not in this spot.")
-            ul.createChildNode("li","Green means that this letter is in the word, and it's in this spot.")
-        })
-        div.createChildNode("h3","Hint Bar");
-        div.createChildNode("p","As you make more guesses, the hint bar above each puzzle will keep track of the letter hints you've accumulated.")
-        div.createChildNode("div",{class:"exampleGame"},(div)=>{
-            div.createChildNode("div",{class:"hintsContainer"},(div)=>{
-                div.createChildNode("div",{class:"hintContainer"},(div)=>{
-                    div.createChildNode("div",{class:"smallHint hasLetter"},'C');
-                    div.createChildNode("div",{class:"smallHint hasLetter used"},'I');
-                });
-                div.createChildNode("div",{class:"hintContainer"},(div)=>{
-                    div.createChildNode("div",{class:"hint correct"},'I');
-                });
-                div.createChildNode("div",{class:"hintContainer"},(div)=>{
-                    div.createChildNode("div",{class:"smallHint hasLetter used"},'I');
-                    div.createChildNode("div",{class:"smallHint hasLetter"},'N');
-                });
-                div.createChildNode("div",{class:"hintContainer"},(div)=>{
-                    div.createChildNode("div",{class:"smallHint hasLetter"},'C');
-    
-                    div.createChildNode("div",{class:"smallHint hasLetter"},'N');
-                });
-                div.createChildNode("div",{class:"hintContainer"},(div)=>{
-                    div.createChildNode("div",{class:"smallHint hasLetter"},'C');
-                    div.createChildNode("div",{class:"smallHint hasLetter used"},'I');
-                    div.createChildNode("div",{class:"smallHint hasLetter"},'N');
-                });
-            });
-            div.createChildNode("div",(div)=>{
-                div.createChildNode("div",{class:"guessLetter hasLetter"},'N');
-                div.createChildNode("div",{class:"guessLetter correct"},'I');
-                div.createChildNode("div",{class:"guessLetter hasLetter"},'C');
-                div.createChildNode("div",{class:"guessLetter incorrect"},'E');
-                div.createChildNode("div",{class:"guessLetter incorrect"},'R');
-            });
-            div.createChildNode("div",(div)=>{
-                div.createChildNode("div",{class:"guessLetter incorrect"},'M');
-                div.createChildNode("div",{class:"guessLetter correct"},'I');
-                div.createChildNode("div",{class:"guessLetter incorrect"},'R');
-                div.createChildNode("div",{class:"guessLetter incorrect"},'E');
-                div.createChildNode("div",{class:"guessLetter incorrect"},'S');
-            });
-            div.createChildNode("div",(div)=>{
-                div.createChildNode("div",{class:"guessLetter incorrect"},'A');
-                div.createChildNode("div",{class:"guessLetter incorrect"},'U');
-                div.createChildNode("div",{class:"guessLetter incorrect"},'D');
-                div.createChildNode("div",{class:"guessLetter hasLetter"},'I');
-                div.createChildNode("div",{class:"guessLetter incorrect"},'O');
-            });
-        });
-        div.createChildNode("ul",(ul)=>{
-            ul.createChildNode("li","Small yellow letters mean that the letter could be in this spot.");
-            ul.createChildNode("li","Larger green letters mean that the word has that letter in this spot.");
-            ul.createChildNode("li","Faded yellow is the same as yellow, but indicates that you've already found a spot where this letter is used. This is to account for potential duplicate letters.");
-        });
-        div.createChildNode("h3","Results");
-        div.createChildNode("ul",(ul)=>{
-            ul.createChildNode("li","Time (⏱️): The time it took to guess all of the letter puzzles from your first guess to your final guess.");
-            ul.createChildNode("li","Guesses (❓): The amount of valid guesses it took to solve all the puzzles.");
-            ul.createChildNode("li","Accuracy (🎯): The ratio of your valid guesses vs. all of your guesses, as a percentage.");
-        });
-        div.createChildNode("h3","Game Modes");
-        div.createChildNode("ul",(ul)=>{
-            ul.createChildNode("li","Daily (📆): This puzzle is part of a daily puzzle. A new puzzle is generated every day.");
-            ul.createChildNode("li","Random (🎲): This puzzle is randomly generated.");
-            ul.createChildNode("li","Custom (🔧): This is a custom made puzzle.");
-        });
-        div.createChildNode("h3","Difficulties");
-        div.createChildNode("ul",(ul)=>{
-            ul.createChildNode("li","Easy (🟢): Generates a puzzle using a list of commonly used five letter words.");
-            ul.createChildNode("li","Normal (🟦): Generates 2 - 4 puzzles using a list of commonly used five letter words.");
-            ul.createChildNode("li","Expert (🔶): Generates 2 - 8 puzzles using a list of all valid five letter words.");
-        });
+        setStaticDialogContents(div,"how_to_play");
     },buttons:(div)=>{
         div.createChildNode("button",{class:"smallButton"},"Close",(button)=>{
             button.addEventListener("click",(e)=>{
