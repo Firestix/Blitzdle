@@ -129,7 +129,9 @@ function generateMainPage() {
         });
         div.createChildNode("br");
         div.createChildNode("br");
-        div.createChildNode("div",{style:"font-size:10pt"},` v${queryVars["v"]}`);
+        div.createChildNode("div",{class:"version"},` v${queryVars["v"]}`,(div)=>{
+            div.addEventListener("click",()=>{openChangelogDialog()})
+        });
     })
 }
 
@@ -431,5 +433,8 @@ function downloadFile(filename,data) {
 	window.URL.revokeObjectURL(url);
 }
 
+function openChangelogDialog() {
+    openStaticDialog(`changelog_${queryVars["v"]}`);
+}
 
 init();

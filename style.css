@@ -161,6 +161,14 @@ button:hover {
     background-color: var(--theme-background-base);
     height:120px;
 }
+.version {
+    display: inline-block;
+    cursor: pointer;
+    font-size: 10pt;
+}
+.version:hover {
+    text-decoration: underline;
+}
 @media screen and (max-width:600px) {
     .guessContainer {
         width:100vw;
