@@ -49,13 +49,13 @@ async function init() {
     } else {
         generateMainPage();
         let lastVersionSeen = window.localStorage.getItem("lastVersionSeen");
-        if (!lastVersionSeen || (lastVersionSeen && lastVersionSeen != queryVars["v"])) {
+        if (!lastVersionSeen || (lastVersionSeen && lastVersionSeen != queryVars["v"].replaceAll(/[a-z]/g,""))) {
             try {
                 openChangelogDialog();
             } catch (e) {
                 console.error(e);
             } finally {
-                window.localStorage.setItem("lastVersionSeen",queryVars["v"])
+                window.localStorage.setItem("lastVersionSeen",queryVars["v"].replaceAll(/[a-z]/g,""))
             }
         }
     }
@@ -456,7 +456,7 @@ function downloadFile(filename,data) {
 }
 
 function openChangelogDialog() {
-    openStaticDialog(`changelog_${queryVars["v"]}`);
+    openStaticDialog(`changelog_${queryVars["v"].replaceAll(/[a-z]/g,"")}`);
 }
 
 init();
