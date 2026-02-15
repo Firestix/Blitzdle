@@ -1,9 +1,9 @@
 import { WordList } from "./WordList.js";
 
 export class GameWordLists {
-    /** @type {WordList} */
+    /** @type {Promise<WordList>} */
     completeWordList;
-    /** @type {WordList} */
+    /** @type {Promise<WordList>} */
     selectWordList;
     async loadWordLists() {
         this.completeWordList = this.completeWordList || WordList.fromURL("wordle.txt");
