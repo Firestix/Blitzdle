@@ -124,6 +124,10 @@ function generateMainPage() {
             button.addEventListener("click",replayDialog);
         });
         div.createChildNode("br");
+        div.createChildNode("button",{class:"smallButton"},"Credits",(button)=>{
+            button.addEventListener("click",()=>{openStaticDialog("credits")});
+        });
+        div.createChildNode("br");
         div.createChildNode("br");
         div.createChildNode("div",{style:"font-size:10pt"},` v${queryVars["v"]}`);
     })
