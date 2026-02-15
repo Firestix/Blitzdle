@@ -375,6 +375,25 @@ button:hover {
     animation-name: inpErr;
     animation-timing-function: ease-in-out;
 }
+.mainMenuContainer .title{
+  margin: 20px 0;
+}
+.mainMenuContainer .title *{
+  display: inline-block;
+}
+.mainMenuContainer .title .gameGuessContainer{
+  height:auto;
+}
+.mainMenuContainer .title .guessLetter{
+  width:45px;
+  height:45px;
+  line-height: 45px;
+  font-size: 32pt;
+}
+.mainMenuContainer .title .dle{
+  font-weight: bold;
+  font-size:18pt;
+}
 @keyframes letterInp {
     from {
         bottom:20px;

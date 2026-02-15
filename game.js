@@ -13,6 +13,7 @@ import { DialogBox } from "./modules/dialogBox.js";
 import { MultiWordGame } from "./modules/MultiWordGame.js";
 import { isMobile } from "./modules/MobileRegex.js";
 import { ReplayMap } from "./modules/Replay.js";
+import { createTitle } from "./modules/Title.js";
 
 let dialog;
 
@@ -75,7 +76,10 @@ function generateMainPage() {
     let div = document.getElementById("game");
     div.innerHTML = "";
     div.createChildNode("div",{class:"mainMenuContainer"},(div)=>{
-        div.createChildNode("h1","Blitzdle");
+        //div.createChildNode("h1","Blitzdle");
+        div.createChildNode("div",{class:"title"},(div)=>{
+            createTitle(div)
+        });
         div.createChildNode("div",(div)=>{
             div.createChildNode("span","Based on ")
             div.createChildNode("a",{href:"https://www.nytimes.com/games/wordle/",target:"_blank"},"Wordle");
