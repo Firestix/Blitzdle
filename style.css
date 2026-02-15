@@ -412,4 +412,10 @@ button:hover {
         --theme-background-hint-incorrect:#666;
         --theme-color-hint-incorrect:#444;
     }
+    a {
+        color:#00aaff;
+    }
+    a:visited {
+        color:#aa00ff;
+    }
 }
