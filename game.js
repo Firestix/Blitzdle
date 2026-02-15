@@ -211,9 +211,11 @@ function customGameDialog() {
     })
 }
 
-function openStaticDialog(mdName) {
-    dialog = new DialogBox({body:(div)=>{
-        setStaticDialogContents(div,mdName);
+async function openStaticDialog(mdName) {
+    let md = await fetch(`./dialogs/${mdName}.md`);
+    if (md.status !== 200) throw "File not found";
+    dialog = new DialogBox({body:async (div)=>{
+        div.innerHTML = marked.parse(await fetch(`./dialogs/${mdName}.md`).then(res=>res.text()))
     },buttons:(div)=>{
         div.createChildNode("button",{class:"smallButton"},"Close",(button)=>{
             button.addEventListener("click",(e)=>{
@@ -221,10 +223,6 @@ function openStaticDialog(mdName) {
             })
         });
     },modal:true,class:"dialogBox howtoplay",openOnCreation:true})
-}
-
-async function setStaticDialogContents(elem,mdName) {
-    elem.innerHTML = marked.parse(await fetch(`./dialogs/${mdName}.md`).then(res=>res.text()))
 }
 
 function replayDialog() {
