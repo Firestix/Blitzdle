@@ -1,3 +1,4 @@
+**v0.3.0b:** Fixed some links in credits. 
 **v0.3.0a:** Fixed bug with title generation. 
 ## v0.3.0 
 ### 2/14/2026
