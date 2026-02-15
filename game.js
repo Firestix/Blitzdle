@@ -245,15 +245,19 @@ function replayDialog() {
     let file = document.quickElement("input",{type:"file",accept:".replay"});
     file.addEventListener("change",(e)=>{
         const reader = new FileReader();
-        reader.readAsArrayBuffer(e.target.files[0]);
+        reader.readAsText(e.target.files[0]);
         reader.onloadend = (e)=>{
-            let div = document.getElementById("game");
-            div.innerHTML = "";
-            MultiWordGame.fromReplay(div,e.target.result).then((obj)=>{
-                obj.game.addEventListener("finished",async (e)=>{
-                    endGameDialog(obj.game);
-                })
+            let base64Str = encodeBase64FromUrl(e.target.result);
+            fetch(`data:application/octet-stream;base64,${base64Str}`).then(res=>res.arrayBuffer()).then(buffer=>{
+                let div = document.getElementById("game");
+                div.innerHTML = "";
+                MultiWordGame.fromReplay(div,buffer).then((obj)=>{
+                    obj.game.addEventListener("finished",async (e)=>{
+                        endGameDialog(obj.game);
+                    })
+                });
             });
+            
         }
     })
     file.click();
@@ -435,7 +439,11 @@ ${window.location}`;
 }
 
 function downloadReplay(gameState) {
-    downloadFile("game_" + (new Date().toISOString()).replaceAll(/:/g,"_") + ".replay",gameState.replay.encode())
+    let dailyReader = new FileReader();
+    dailyReader.readAsDataURL(new Blob([gameState.replay.encode()], { type: "application/octet-stream" }));
+    dailyReader.onloadend = (e) => {
+        downloadFile("game_" + (new Date().toISOString()).replaceAll(/:/g,"_") + ".replay",e.target.result.replace(/data:\S+\/\S+;base64,/,"").replaceAll("=","").replaceAll("+","-").replaceAll("/","_"))
+    }
 }
 
 function downloadFile(filename,data) {
