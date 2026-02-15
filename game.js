@@ -47,6 +47,16 @@ async function init() {
         }
     } else {
         generateMainPage();
+        let lastVersionSeen = window.localStorage.getItem("lastVersionSeen");
+        if (!lastVersionSeen || (lastVersionSeen && lastVersionSeen != queryVars["v"])) {
+            try {
+                openChangelogDialog();
+            } catch (e) {
+                console.error(e);
+            } finally {
+                window.localStorage.setItem("lastVersionSeen",queryVars["v"])
+            }
+        }
     }
 }
 
