@@ -76,7 +76,7 @@ function generateMainPage() {
         });
         div.createChildNode("br")
         div.createChildNode("button",{class:"smallButton"},"How To Play",(button)=>{
-            button.addEventListener("click",howToPlayDialog);
+            button.addEventListener("click",()=>{openStaticDialog("how_to_play")});
         });
         div.createChildNode("h2","Daily");
         div.createChildNode("button",{class:"difficultyButton"},(button)=>{
@@ -207,9 +207,9 @@ function customGameDialog() {
     })
 }
 
-function howToPlayDialog() {
+function openStaticDialog(mdName) {
     dialog = new DialogBox({body:(div)=>{
-        setStaticDialogContents(div,"how_to_play");
+        setStaticDialogContents(div,mdName);
     },buttons:(div)=>{
         div.createChildNode("button",{class:"smallButton"},"Close",(button)=>{
             button.addEventListener("click",(e)=>{
