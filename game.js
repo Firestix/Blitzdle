@@ -306,6 +306,10 @@ function howToPlayDialog() {
     },modal:true,class:"dialogBox howtoplay",openOnCreation:true})
 }
 
+async function setStaticDialogContents(elem,mdName) {
+    elem.innerHTML = marked.parse(await fetch(`./dialogs/${mdName}.md`).then(res=>res.text()))
+}
+
 function replayDialog() {
     let file = document.quickElement("input",{type:"file",accept:".replay"});
     file.addEventListener("change",(e)=>{
