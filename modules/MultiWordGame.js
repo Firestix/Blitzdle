@@ -143,6 +143,7 @@ export class MultiWordGame extends EventTarget {
         if (!this.gameFinished) {
             if (this.gameStarted) {
                 this.replay.insert(e)
+                if (!this.isReplay && e.keyCode != 13) this.replayReader.readAsDataURL(new Blob([this.replay.encode()], { type: "application/octet-stream" }));
             }
             this.modifyGuess(e.keyCode);
         }
@@ -236,7 +237,7 @@ export class MultiWordGame extends EventTarget {
                                 div.classList.add("wideKey");
                             }
                             div.addEventListener("click", () => {
-                                if (!this.isReplay) this.keyHandler({ type: "key", keyCode: code });
+                                if (!this.isReplay) this.keyHandler({ type: "keydown", keyCode: code });
                             });
                         };
                         let keyButton = div.createChildNode("div", { class: "keyButton" }, (div) => {
@@ -359,7 +360,7 @@ export class MultiWordGame extends EventTarget {
             let firstGuess = replayData.firstGuess;
             for (let c = 0; c < firstGuess.length; c++) {
                 window.setTimeout(() => {
-                    game.keyHandler({ keyCode: firstGuess[c] });
+                    game.keyHandler({ type:"keydown", keyCode: firstGuess[c] });
                 }, 150*(c+1)); 
             }
             let actions = replayData.actions;
