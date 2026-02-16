@@ -236,7 +236,7 @@ export class MultiWordGame extends EventTarget {
                                 div.classList.add("wideKey");
                             }
                             div.addEventListener("click", () => {
-                                if (!this.isReplay) this.keyHandler({ keyCode: code });
+                                if (!this.isReplay) this.keyHandler({ type: "key", keyCode: code });
                             });
                         };
                         let keyButton = div.createChildNode("div", { class: "keyButton" }, (div) => {
