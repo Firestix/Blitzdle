@@ -1,3 +1,5 @@
+**v0.3.0c:** Fixed replay system not recording key presses between guesses
+
 **v0.3.0b:** Fixed onscreen keyboard being unresponsive after the first guess.
 
 **v0.3.0a:** Fixed bug with title generation. 
