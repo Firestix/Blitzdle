@@ -285,7 +285,7 @@ function startGame(daily,hardMode=false,custom=false,seed = false,num = false) {
     let mwg = new MultiWordGame(document.getElementById("game"),{
         numWords:numWords,
         dailyMode:daily,
-        gameSeed:gameSeed,
+        seed:gameSeed,
         hardMode:hardMode,
         customMode:custom,
         easyMode:numWords==1&&!hardMode,
@@ -417,7 +417,7 @@ function shareClipboard(gameState) {
     let hard = gameState.isHard ? "🔶" : gameState.isEasy ? "🟢" : "🟦";
     let platform = isMobile() ? "📱" : "💻";
     let daily = `${hard}${platform}${gameState.isDaily ? "📆:" + startDate.getFullYear() + "-" + (startDate.getMonth()+1) + "-" + startDate.getDate() : gameState.isCustom ? "🔧" : "🎲"}`;
-    let seeds = gameState.isDaily ? "" : `\n🌱:${gameState.gameSeed} (x${gameState.numWords})`;
+    let seeds = !(gameState.isDaily) && !(gameState.isCustom) ? "" : `\n🌱:${gameState.seed} (x${gameState.numWords})`;
     let newClip = `Blitzdle ${daily}
 ⏱️:${time}
 ❓:${gameState.guesses.length}

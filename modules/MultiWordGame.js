@@ -58,8 +58,7 @@ export class MultiWordGame extends EventTarget {
         let isEasy = gameSettings.easyMode;
         this.isReplay = gameSettings.replayMode;
         let isCustom = gameSettings.customMode;
-        let seed = gameSettings.gameSeed;
-        this.replay = ReplayMap.fromObject({numWords,isDaily,isHard,isEasy,isCustom,seed});
+        let seed = gameSettings.seed;
         
         this.replayReader = new FileReader();
         this.replayReader.onloadend = (e) => this.replayReaderHandler(e, "gameState");
