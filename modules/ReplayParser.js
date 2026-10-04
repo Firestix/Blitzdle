@@ -146,7 +146,7 @@ export const PARSERS = [
                     settingsData.setUint16(12+x*2,this.wordRng[x],true);
                 }
             } else {
-                settingsData.setUint32(12,this.seed);
+                settingsData.setUint32(12,this.seed,true);
             }
             let z = 12+sDataRNGLength;
             for (let g of this.firstGuess) {                            // first guess charcodes (next 5)
