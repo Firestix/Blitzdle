@@ -281,9 +281,8 @@ function startGame(daily,hardMode=false,custom=false,seed = false,num = false,wo
         if (easyMode) {
             wLen = 5;
         } else {
-            // let wlRng = rng();
-            // wLen = wlRng <= 0.05 ? 4 : (wlRng >= 9.95 ? 6 : 5);
-            wLen = 4;
+            let wlRng = rng();
+            wLen = wlRng <= 0.1 ? 4 : (wlRng >= 0.9 ? 6 : 5);
         }
     }
     let mwg = new MultiWordGame(mainDiv,{
