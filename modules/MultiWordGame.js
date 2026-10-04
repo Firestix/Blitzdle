@@ -337,11 +337,12 @@ export class MultiWordGame extends EventTarget {
         let currentGuess = "";
         let lettersTyped = [...firstGuess, 13, ...data.filter(e=>e[1].type == "key").map(v=>v[1].value)];
         let guesses = [];
+        let wl = firstGuess.length;
         for (let x = 0, xlen = lettersTyped.length; x < xlen; x++) {
             let code = lettersTyped[x];
             switch (code) {
                 case 13:
-                    if (currentGuess.length == this.wordLength && !guesses.includes(currentGuess) && wordLists.completeWordList[wl].includes(currentGuess)) {
+                    if (currentGuess.length == wl && !guesses.includes(currentGuess) && wordLists.completeWordList[wl].includes(currentGuess)) {
                         guesses.unshift(currentGuess);
                         currentGuess = "";
                     }
@@ -352,7 +353,7 @@ export class MultiWordGame extends EventTarget {
                     break;
                 default:
                     if (code > 64 && code < 91) {
-                        if (currentGuess.length < this.wordLength) {
+                        if (currentGuess.length < wl) {
                             currentGuess += String.fromCharCode(code);
                         }
                     }
