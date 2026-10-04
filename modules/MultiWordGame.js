@@ -4,8 +4,6 @@ import { ReplayMap } from "./Replay.js";
 
 const wordLists = new GameWordLists();
 
-wordLists.loadWordLists()
-
 export class MultiWordGame extends EventTarget {
     /** @type {Element} */
     container;
@@ -105,6 +103,7 @@ export class MultiWordGame extends EventTarget {
         return this.replay.wordLength;
     }
     async start() {
+        await wordLists.loadWordLists()
         this.initContainer();
         let wl = this.wordLength;
         let completeWordList = wordLists.completeWordList[wl];
