@@ -303,6 +303,7 @@ export class MultiWordGame extends EventTarget {
     }
     initContainer() {
         this.container.innerHTML = "";
+        this.container.dataset.wordlength = this.wordLength;
         this.guessContainer = this.container.createChildNode("div", { class: "guessContainer" });
         this.unusedLettersContainer = this.container.createChildNode("div", { class: "unusedLettersContainer" });
         // this.buildUnusedLettersElements();

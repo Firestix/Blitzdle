@@ -136,30 +136,33 @@ button:hover {
 */
 .guessLetter {
     background-color: var(--theme-background-element);
-    display: flex;
+    display: inline-flex;
     justify-content: center;
     align-items: center;
     border-radius: 10px;
-    margin: 1px;
+    margin: 0 1px 0 1px;
     text-align: center;
     font-weight: 500;
     user-select: none;
     position: relative;
 } 
 .guessContainer {
-    display: grid;
+    display: block;
+    text-align: center;
     width: 100%;
-    max-width: 600px;
-    margin: auto;
     position: sticky;
     z-index:100;
     top:0px;
     transform: translate(0,0);
-    font-size:92pt;
-    grid: "a a a a a" 1em;
-    container: guesscontainer / size;
     background-color: var(--theme-background-base);
     height:120px;
+    font-size: 92pt;
+    line-height: 120px;
+}
+.guessContainer .guessLetter {
+    width:120px;
+    height:120px;
+    line-height:120px;
 }
 .version {
     display: inline-block;
@@ -169,15 +172,37 @@ button:hover {
 .version:hover {
     text-decoration: underline;
 }
-@media screen and (max-width:600px) {
+@media screen and (max-width:750px) {
     .guessContainer {
         width:100vw;
         height:20vw;
+        line-height: 20vw;
+        font-size: 20vw;
     }
-    .guessLetter {
-        width: calc(20vw-2px);
-        height: 20vw;
-        font-size:20vw;
+    .guessContainer .guessLetter {
+        width: 20vw;
+        height:20vw;
+        line-height: 20vw;
+    }
+    #game[data-wordlength="4"] .guessContainer {
+        height:24vw;
+        line-height: 24vw;
+        font-size: 24vw;
+    }
+    #game[data-wordlength="4"] .guessContainer .guessLetter {
+        width: 24vw;
+        height:24vw;
+        line-height: 24vw;
+    }
+    #game[data-wordlength="6"] .guessContainer {
+        height:16vw;
+        line-height: 16vw;
+        font-size: 16vw;
+    }
+    #game[data-wordlength="6"] .guessContainer .guessLetter {
+        width: 16vw;
+        height:16vw;
+        line-height: 16vw;
     }
 }
 /* @container guesscontainer (max-width:600px) {
@@ -204,6 +229,12 @@ button:hover {
 .gameContainer {
     margin: 0 5px;
     width: 400px;
+}
+#game[data-wordlength="4"] .gameContainer {
+    width: 320px;
+}
+#game[data-wordlength="6"] .gameContainer {
+    width: 480px;
 }
 .gameGuessContainer {
     height: 80px;
@@ -279,6 +310,12 @@ button:hover {
     margin: 2px;
     align-items: center;
     justify-content: center;
+}
+#game[data-wordlength="4"] .hintContainer {
+    width: 25%;
+}
+#game[data-wordlength="6"] .hintContainer {
+    width: calc(100%/6);
 }
 .incorrectConatiner {
     display: flex;
