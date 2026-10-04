@@ -109,7 +109,6 @@ export const PARSERS = [
             this.set("timestamp",settingsView.getFloat64(3,true))
             let rngDataLength = isCustom ? 2*numWords : 4;
             let rngDataView = new DataView(buffer,12,rngDataLength)
-            console.log(isCustom,rngDataView.getUint32(0,true))
             if (isCustom) {
                 let wordRng = [];
                 for (let w = 0; w < numWords; w++) {
@@ -119,7 +118,6 @@ export const PARSERS = [
             } else {
                 this.set("seed",rngDataView.getUint32(0,true))
             }
-            console.log(this.get("seed"))
             let firstGuessData = new Uint8Array(buffer,12+rngDataLength,wordLength)
             this.set("firstGuess",[...firstGuessData])
             let replayView = new DataView(buffer,12+rngDataLength+wordLength);
