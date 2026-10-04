@@ -1,13 +1,14 @@
 export class GuessData {
-    /** @type {[LetterData,LetterData,LetterData,LetterData,LetterData]} */
-    #letterData = new Array(5);
+    /** @type {LetterData[]} */
+    #letterData;
     /**
      * Creates a new guess data instance.
      * @param {String} answer
      * @param {String} guess
      */
     constructor(answer, guess) {
-        for (let x = 0; x < 5; x++) {
+        this.#letterData = new Array(answer.length);
+        for (let x = 0; x < this.#letterData.length; x++) {
             /** @type {LetterData} */
             let wordData = { letter: guess[x], type: GuessData.INCORRECT };
             if (guess[x] == answer[x]) {
@@ -20,7 +21,7 @@ export class GuessData {
                 }
             });
         }
-        for (let x = 0; x < 5; x++) {
+        for (let x = 0; x < this.#letterData.length; x++) {
             if (this[x].type == GuessData.INCORRECT && answer.includes(guess[x]) && this.#letterData.filter(e => e.letter == guess[x] && e.type > GuessData.INCORRECT).length < answer.split('').filter(e => e == guess[x]).length) {
                 this[x].type = GuessData.HAS_LETTER;
             }
@@ -40,7 +41,7 @@ export class GuessData {
     }
     *[Symbol.iterator]() {
         let x = 0;
-        while (x < 5) yield this.#letterData[x++];
+        while (x < this.#letterData.length) yield this.#letterData[x++];
     }
     /** @type {0} */
     static INCORRECT = 0;

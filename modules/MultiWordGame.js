@@ -50,6 +50,7 @@ export class MultiWordGame extends EventTarget {
             customMode: false,
             replayMode: false,
             startOnCreation: false,
+            wordLength:5,
             ...settings
         };
         let numWords = gameSettings.numWords;
@@ -59,6 +60,21 @@ export class MultiWordGame extends EventTarget {
         this.isReplay = gameSettings.replayMode;
         let isCustom = gameSettings.customMode;
         let seed = gameSettings.seed;
+        let wordLength = gameSettings.wordLength;
+        let rMapObj = {
+            numWords,
+            isDaily,
+            isHard,
+            isEasy,
+            isCustom,
+            wordLength
+        }
+        if (isCustom) {
+            rMapObj.wordRng = gameSettings.wordRng
+        } else {
+            rMapObj.seed = seed;
+        }
+        this.replay = ReplayMap.fromObject(rMapObj);
         
         this.replayReader = new FileReader();
         this.replayReader.onloadend = (e) => this.replayReaderHandler(e, "gameState");
@@ -85,9 +101,16 @@ export class MultiWordGame extends EventTarget {
     get numWords() {
         return this.replay.numWords;
     }
+    get wordLength() {
+        return this.replay.wordLength;
+    }
     async start() {
         this.initContainer();
-        let listToUse = this.isHard ? (await wordLists.completeWordList).randomize(this.numWords, this.gameSeed) : (await wordLists.selectWordList).randomize(this.numWords, this.gameSeed);
+        let wl = this.wordLength;
+        let completeWordList = wordLists.completeWordList[wl];
+        let selectWordList = wordLists.selectWordList[wl];
+        if (completeWordList === undefined || selectWordList === undefined) throw `Word List of length ${wl} does not exist`
+        let listToUse = this.isHard ? completeWordList.randomize(this.numWords, this.gameSeed) : selectWordList.randomize(this.numWords, this.gameSeed);
         for (let x = 0, xlen = listToUse.length; x < xlen; x++) {
             let div = this.gamesContainer.createChildNode("div", { class: "gameContainer" });
             this.games.push(new WordGame(div, x, listToUse[x], this.guesses));
@@ -103,7 +126,10 @@ export class MultiWordGame extends EventTarget {
         }
     }
     async guess() {
-        if (this.currentGuess.length == 5 && !this.guesses.includes(this.currentGuess) && (await wordLists.completeWordList).includes(this.currentGuess)) {
+        let guessedAlready = this.guesses.includes(this.currentGuess);
+        let wl = wordLists.completeWordList[this.wordLength];
+        let inWordList = (wl).includes(this.currentGuess)
+        if (this.currentGuess.length == this.wordLength && !guessedAlready && inWordList) {
             if (!this.gameStarted) {
                 this.gameStarted = true;
                 this.startTime = Date.now();
@@ -179,7 +205,7 @@ export class MultiWordGame extends EventTarget {
             default:
                 // Keys A-Z
                 if (code > 64 && code < 91) {
-                    if (this.currentGuess.length < 5) {
+                    if (this.currentGuess.length < this.wordLength) {
                         this.currentGuess += String.fromCharCode(code);
                     }
                 }
@@ -188,7 +214,7 @@ export class MultiWordGame extends EventTarget {
     }
     buildGuessContainerElements() {
         this.guessContainer.innerHTML = "";
-        for (let x = 0; x < 5; x++) {
+        for (let x = 0; x < this.wordLength; x++) {
             this.guessContainer.createChildNode("div", { class: "guessLetter" + (this.currentGuess.length == x + 1 ? " letterInp" : "") }, (div) => {
                 div.createChildNode("div", { style: this.currentGuess[x] ? "" : "color:transparent;" }, this.currentGuess[x] ? this.currentGuess[x] : "_");
             });
@@ -304,7 +330,7 @@ export class MultiWordGame extends EventTarget {
     }
     /**
      * 
-     * @param {[number,number,number,number,number]} firstGuess 
+     * @param {number[]} firstGuess 
      * @param {[number,{type:"key",value:number}][]} data 
      * @returns 
      */
@@ -316,7 +342,7 @@ export class MultiWordGame extends EventTarget {
             let code = lettersTyped[x];
             switch (code) {
                 case 13:
-                    if (currentGuess.length == 5 && !guesses.includes(currentGuess) && (await wordLists.completeWordList).includes(currentGuess)) {
+                    if (currentGuess.length == this.wordLength && !guesses.includes(currentGuess) && wordLists.completeWordList[wl].includes(currentGuess)) {
                         guesses.unshift(currentGuess);
                         currentGuess = "";
                     }
@@ -327,7 +353,7 @@ export class MultiWordGame extends EventTarget {
                     break;
                 default:
                     if (code > 64 && code < 91) {
-                        if (currentGuess.length < 5) {
+                        if (currentGuess.length < this.wordLength) {
                             currentGuess += String.fromCharCode(code);
                         }
                     }
@@ -405,4 +431,6 @@ export class MultiWordGame extends EventTarget {
  * @prop {boolean} startOnCreation
  * @prop {number} gameSeed
  * @prop {number} numWords
+ * @prop {number} wordLength
+ * @prop {number[]?} wordRng
  */

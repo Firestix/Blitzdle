@@ -72,7 +72,7 @@ export class WordGame {
         if (!this.solved) {
             let { correct, couldHave, correctLetters } = this.getLetterHintData();
             this.hintsElement.createChildNode("div", { class: "hintsContainer" }, (div) => {
-                for (let y = 0; y < 5; y++) {
+                for (let y = 0; y < this.#answer.length; y++) {
                     div.createChildNode("div", { class: "hintContainer" }, (div) => {
                         if (correct[y].length > 0) {
                             div.createChildNode("div", { class: "hint correct" }, correct[y][0]);
@@ -97,7 +97,7 @@ export class WordGame {
         let couldHave = [[], [], [], [], []];
         let incorrect = [[], [], [], [], []];
         for (let guess of this.guesses) {
-            for (let x = 0; x < 5; x++) {
+            for (let x = 0; x < this.#answer.length; x++) {
                 switch (guess[x].type) {
                     case GuessData.CORRECT:
                         if (!correct[x].includes(guess[x].letter)) {
@@ -113,8 +113,8 @@ export class WordGame {
                 }
             }
         }
-        for (let x = 0; x < 5; x++) {
-            for (let y = 0; y < 5; y++) {
+        for (let x = 0; x < this.#answer.length; x++) {
+            for (let y = 0; y < this.#answer.length; y++) {
                 if (x == y) continue;
                 for (let letter of hasLetter[y]) {
                     if (!couldHave[x].includes(letter) && !hasLetter[x].includes(letter) && !incorrect[x].includes(letter)) {
