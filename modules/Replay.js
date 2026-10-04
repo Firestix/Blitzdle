@@ -1,6 +1,6 @@
 import { PARSERS } from "./ReplayParser.js";
 const REPLAY_HEADER = "replay/blitzdle";
-const REPLAY_VERSION = 2;
+const REPLAY_VERSION = 3;
 
 export class ReplayMap extends Map{
     /**
@@ -12,12 +12,11 @@ export class ReplayMap extends Map{
         if (buffer) {
             this.decode(buffer);
         } else {
-            this.seed = this.isDaily = this.isHard = this.isCustom = this.isEasy = this.numWords = undefined;
+            this.seed = this.isDaily = this.isHard = this.isCustom = this.isEasy = this.numWords = this.wordLength = this.wordRng = undefined;
         }
     }
     get settings() {
-        return {
-            seed:this.seed,
+        let obj = {
             isDaily:this.isDaily,
             isHard:this.isHard,
             isCustom:this.isCustom,
@@ -25,7 +24,14 @@ export class ReplayMap extends Map{
             numWords:this.numWords,
             timestamp:this.timestamp,
             firstGuess:this.firstGuess,
+            wordLength:this.wordLength
         }
+        if (this.isCustom) {
+            obj.wordRng = this.wordRng
+        } else {
+            obj.seed = this.seed;
+        }
+        return obj
     }
     /** @type {number} */
     get seed() {
@@ -68,6 +74,20 @@ export class ReplayMap extends Map{
     }
     set numWords(num) {
         this.set("numWords",num)
+    }
+    /** @type {number} */
+    get wordLength() {
+        return this.get("wordLength")
+    }
+    set wordLength(num) {
+        this.set("wordLength",num)
+    }
+    /** @type {number[]} */
+    get wordRng() {
+        return this.get("wordRng")
+    }
+    set wordRng(list) {
+        this.set("wordRng",list)
     }
     /** @type {number} */
     get timestamp() {
@@ -120,7 +140,7 @@ export class ReplayMap extends Map{
             headerView.setUint8(x++,char.charCodeAt(0));
         }
         headerView.setUint8(x,REPLAY_VERSION);
-        let dataBuffer = new ArrayBuffer(parser.settingsLength+parser.getDataLength(this));
+        let dataBuffer = new ArrayBuffer(parser.getSettingsLength(this)+parser.getDataLength(this));
         parser.encode.apply(this,[dataBuffer]);
         let headerBytes = new Uint8Array(headerBuffer);
         let dataBytes = new Uint8Array(dataBuffer);
@@ -152,6 +172,12 @@ export class ReplayMap extends Map{
         map.isCustom = obj.isCustom;
         map.isEasy = obj.isEasy;
         map.numWords = obj.numWords;
+        map.wordLength = obj.wordLength;
+        if (obj.isCustom) {
+            map.wordRng = obj.wordRng;
+        } else {
+            map.seed = obj.seed;
+        }
         return map;
     }
     timeOfLastKeyPress() {
