@@ -268,10 +268,10 @@ function replayDialog() {
  * @param {boolean} daily 
  * @param {boolean} hardMode 
  * @param {boolean} custom 
- * @param {boolean} seed 
+ * @param {string|number|false} seed 
  * @param {boolean} num 
  */
-function startGame(daily,hardMode=false,custom=false,seed = false,num = false) {
+function startGame(daily,hardMode=false,custom=false,seed = false,num = false,wordlength=undefined,wordRng=undefined) {
     let gameSeed;
     let numWords = num;
     if (custom && !isNaN(seed)) {
@@ -282,14 +282,26 @@ function startGame(daily,hardMode=false,custom=false,seed = false,num = false) {
     let rng = new Math.seedrandom(rngSeed);
     gameSeed = gameSeed || Math.floor(rng()*4294967295);
     numWords = numWords || Math.floor(numWordsTransformFunc(rng()/(hardMode?1:2)));
+    let easyMode = numWords==1&&!hardMode
+    let wLen = wordlength;
+    if (isNaN(wLen)) {
+        if (easyMode) {
+            wLen = 5;
+        } else {
+            // let wlRng = rng();
+            // wLen = wlRng <= 0.05 ? 4 : (wlRng >= 9.95 ? 6 : 5);
+            wLen = 4;
+        }
+    }
     let mwg = new MultiWordGame(document.getElementById("game"),{
         numWords:numWords,
         dailyMode:daily,
         seed:gameSeed,
         hardMode:hardMode,
         customMode:custom,
-        easyMode:numWords==1&&!hardMode,
-        startOnCreation:true
+        easyMode,
+        startOnCreation:true,
+        wordLength:wLen
     });
     mwg.addEventListener("finished",(e)=>{
         endGameDialog(e.detail.gameState);

@@ -370,7 +370,7 @@ export class MultiWordGame extends EventTarget {
     static async fromReplay(elem, replay, dataOnly = false) {
         let replayData = new ReplayMap(replay);
         let gameSettings = {
-            gameSeed: replayData.seed,
+            seed: replayData.seed,
             dailyMode: replayData.isDaily,
             hardMode: replayData.isHard,
             customMode: replayData.isCustom,
@@ -428,7 +428,7 @@ export class MultiWordGame extends EventTarget {
  * @prop {boolean} customMode
  * @prop {boolean} replayMode
  * @prop {boolean} startOnCreation
- * @prop {number} gameSeed
+ * @prop {number} seed
  * @prop {number} numWords
  * @prop {number} wordLength
  * @prop {number[]?} wordRng

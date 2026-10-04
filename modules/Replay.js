@@ -166,7 +166,6 @@ export class ReplayMap extends Map{
     }
     static fromObject(obj) {
         let map = new ReplayMap();
-        map.seed = obj.seed;
         map.isDaily = obj.isDaily;
         map.isHard = obj.isHard;
         map.isCustom = obj.isCustom;
