@@ -16,16 +16,15 @@ import { ReplayMap } from "./modules/Replay.js";
 import { createTitle } from "./modules/Title.js";
 
 let dialog;
+let mainDiv = document.getElementById("game");
 
 async function init() {
     let gameState = window.localStorage.getItem("gameState");
-    let div = document.getElementById("game");
     if (gameState) {
         let parsedData = JSON.parse(gameState);
         if (parsedData.expire > Date.now()) {
             let replayData = await ReplayMap.fromEncodedData(encodeBase64FromUrl(parsedData.state));
-            div.innerHTML = "";
-            let mwg = await MultiWordGame.fromReplayMap(div,replayData);
+            let mwg = await MultiWordGame.fromReplayMap(mainDiv,replayData);
             mwg.addEventListener("finished",(e)=>{
                 endGameDialog(e.detail.gameState);
             }) 
@@ -36,11 +35,9 @@ async function init() {
     } else if (pageParams.get("qg")) {
         switch (pageParams.get("qg")) {
             case "normal":
-                div.innerHTML = "";
                 startGame(false);
                 break;
             case "hard":
-                div.innerHTML = "";
                 startGame(false,true);
                 break;
             default:
@@ -73,9 +70,8 @@ function encodeBase64FromUrl(str) {
 }
 
 function generateMainPage() {
-    let div = document.getElementById("game");
-    div.innerHTML = "";
-    div.createChildNode("div",{class:"mainMenuContainer"},(div)=>{
+    mainDiv.innerHTML = "";
+    mainDiv.createChildNode("div",{class:"mainMenuContainer"},(div)=>{
         //div.createChildNode("h1","Blitzdle");
         div.createChildNode("div",{class:"title"},(div)=>{
             createTitle(div)
@@ -220,8 +216,7 @@ function customGameDialog() {
             let hardMode = Number(dialog.body.querySelector("#customWordList").value);
             let seed = dialog.body.querySelector("#customSeed").value == "" ? false : dialog.body.querySelector("#customSeed").value;
             let numWords = Number(dialog.body.querySelector("#customNumWords").value);
-            let div = document.getElementById("game");
-            div.innerHTML = "";
+            mainDiv.innerHTML = "";
             startGame(false,hardMode,true,seed,numWords);
         }
     })
@@ -249,9 +244,7 @@ function replayDialog() {
         reader.onloadend = (e)=>{
             let base64Str = encodeBase64FromUrl(e.target.result);
             fetch(`data:application/octet-stream;base64,${base64Str}`).then(res=>res.arrayBuffer()).then(buffer=>{
-                let div = document.getElementById("game");
-                div.innerHTML = "";
-                MultiWordGame.fromReplay(div,buffer).then((obj)=>{
+                MultiWordGame.fromReplay(mainDiv,buffer).then((obj)=>{
                     obj.game.addEventListener("finished",async (e)=>{
                         endGameDialog(obj.game);
                     })
@@ -293,7 +286,7 @@ function startGame(daily,hardMode=false,custom=false,seed = false,num = false,wo
             wLen = 4;
         }
     }
-    let mwg = new MultiWordGame(document.getElementById("game"),{
+    let mwg = new MultiWordGame(mainDiv,{
         numWords:numWords,
         dailyMode:daily,
         seed:gameSeed,
