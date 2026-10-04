@@ -334,6 +334,7 @@ export class MultiWordGame extends EventTarget {
      * @returns 
      */
     static async generateGuesses(firstGuess, data) {
+        await wordLists.loadWordLists()
         let currentGuess = "";
         let lettersTyped = [...firstGuess, 13, ...data.filter(e=>e[1].type == "key").map(v=>v[1].value)];
         let guesses = [];
