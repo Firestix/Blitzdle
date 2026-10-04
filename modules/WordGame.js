@@ -90,12 +90,18 @@ export class WordGame {
         }
     }
     getLetterHintData() {
-        let correct = [[], [], [], [], []];
+        let correct = [];
         let correctLetters = [];
         let couldHaveLetters = [];
-        let hasLetter = [[], [], [], [], []];
-        let couldHave = [[], [], [], [], []];
-        let incorrect = [[], [], [], [], []];
+        let hasLetter = [];
+        let couldHave = [];
+        let incorrect = [];
+        for (let x = 0; x < this.#answer.length; x++) {
+            correct.push([]);
+            hasLetter.push([]);
+            couldHave.push([]);
+            incorrect.push([]);
+        }
         for (let guess of this.guesses) {
             for (let x = 0; x < this.#answer.length; x++) {
                 switch (guess[x].type) {
