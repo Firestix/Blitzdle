@@ -30,6 +30,19 @@ export class WordList extends Array {
     }
     /**
      * 
+     * @param  {...number} indexes 
+     * @returns 
+     */
+    wordsAtIndexes(...indexes) {
+        let copy = WordList.from(this);
+        let arr = [];
+        for (let i of indexes) {
+            arr.push(...copy.splice(i,1))
+        }
+        return arr;
+    }
+    /**
+     * 
      * @param {string} url 
      * @returns 
      */

@@ -96,6 +96,9 @@ export class MultiWordGame extends EventTarget {
     get isEasy() {
         return this.replay.isEasy;
     }
+    get isCustom() {
+        return this.replay.isCustom;
+    }
     get numWords() {
         return this.replay.numWords;
     }
@@ -109,7 +112,12 @@ export class MultiWordGame extends EventTarget {
         let completeWordList = wordLists.completeWordList[wl];
         let selectWordList = wordLists.selectWordList[wl];
         if (completeWordList === undefined || selectWordList === undefined) throw `Word List of length ${wl} does not exist`
-        let listToUse = this.isHard ? completeWordList.randomize(this.numWords, this.gameSeed) : selectWordList.randomize(this.numWords, this.gameSeed);
+        let listToUse = [];
+        if (this.isCustom) {
+            listToUse = this.isHard ? completeWordList.wordsAtIndexes(...this.replay.wordRng) : selectWordList.wordsAtIndexes(...this.replay.wordRng);
+        } else {
+            listToUse = this.isHard ? completeWordList.randomize(this.numWords, this.gameSeed) : selectWordList.randomize(this.numWords, this.gameSeed);
+        }
         for (let x = 0, xlen = listToUse.length; x < xlen; x++) {
             let div = this.gamesContainer.createChildNode("div", { class: "gameContainer" });
             this.games.push(new WordGame(div, x, listToUse[x], this.guesses));
