@@ -175,14 +175,14 @@ button:hover {
 @media screen and (max-width:750px) {
     .guessContainer {
         width:100vw;
-        height:20vw;
-        line-height: 20vw;
-        font-size: 20vw;
+        height:19vw;
+        line-height: 19vw;
+        font-size: 19vw;
     }
     .guessContainer .guessLetter {
-        width: 20vw;
-        height:20vw;
-        line-height: 20vw;
+        width: 19vw;
+        height:19vw;
+        line-height: 19vw;
     }
     #game[data-wordlength="4"] .guessContainer {
         height:24vw;
