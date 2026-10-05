@@ -1,3 +1,4 @@
+**v0.4.0b:** Added a slight delay before replay start to account for device lag
 **v0.4.0a:** Fixed 5 letter guess container breaking on mobile
 ## v0.4.0 
 ### 10/5/2026
