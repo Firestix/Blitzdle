@@ -402,7 +402,7 @@ export class MultiWordGame extends EventTarget {
             for (let c = 0; c < firstGuess.length; c++) {
                 window.setTimeout(() => {
                     game.keyHandler({ type:"keydown", keyCode: firstGuess[c] });
-                }, 200+150*(c+1)); 
+                }, 1000+150*(c+1)); 
             }
             let actions = replayData.actions;
             window.setTimeout(() => {
@@ -412,7 +412,7 @@ export class MultiWordGame extends EventTarget {
                         game.keyHandler({ type:"keydown", keyCode: action[1].value });
                     }, action[0]);
                 }
-            }, 1100);
+            }, 1000+150*(firstGuess.length+1));
         } else {
             game.replay = data;
             let { guesses } = await MultiWordGame.generateGuesses(settings, data);
