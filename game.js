@@ -131,10 +131,10 @@ function generateMainPage() {
             });
         });
         div.createChildNode("h2","Custom");
-        div.createChildNode("button",{class:"difficultyButton"},"Play",(button)=>{
+        div.createChildNode("button",{class:"difficultyButton"},"🌱Play",(button)=>{
             button.addEventListener("click",customGameDialog);
         })
-        div.createChildNode("button",{class:"difficultyButton"},"Create",(button)=>{
+        div.createChildNode("button",{class:"difficultyButton"},"🔧Create",(button)=>{
             button.addEventListener("click",createCustomGameDialog);
         })
         div.createChildNode("br");
@@ -191,7 +191,7 @@ function customGameDialog(event,gameCode=false) {
     dialog = new DialogBox({body:(div)=>{
         div.createChildNode("h2","Custom Game");
         div.createChildNode("div",(div)=>{
-            div.createChildNode("textarea",{id:"customGameStr",autocomplete:"off", autocorrect:"off", autocapitalize:"off", spellcheck:"false", placeholder:"Paste your custom game string here (YmxpdHpkbGUDB....)"},(textarea)=>{
+            div.createChildNode("textarea",{id:"customGameStr",autocomplete:"off", autocorrect:"off", autocapitalize:"off", spellcheck:"false", placeholder:"🌱 Paste your custom game string here (YmxpdHpkbGUDB....)"},(textarea)=>{
                 if (gameCode) textarea.value = gameCode;
             });
         })
