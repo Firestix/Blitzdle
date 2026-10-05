@@ -391,6 +391,11 @@ export class MultiWordGame extends EventTarget {
             replayMode: true,
             startOnCreation: !dataOnly
         };
+        if (replayData.isCustom) {
+            gameSettings.wordRng = replayData.wordRng
+        } else {
+            gameSettings.seed = replayData.seed;
+        }
         let game = new MultiWordGame(elem, gameSettings);
         if (!dataOnly) {
             let firstGuess = replayData.firstGuess;
