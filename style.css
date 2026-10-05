@@ -249,6 +249,12 @@ button:hover {
     font-size: 48pt;
     line-height: 75px;
 }
+@media screen and (max-width:500px) {
+    #game[data-wordlength="6"] .gameContainer {
+        width: 100%;
+    }
+}
+
 .exampleGame {
     width: 395px;
 }
