@@ -431,6 +431,10 @@ button:hover {
   font-weight: bold;
   font-size:18pt;
 }
+#customGameStr {
+    width:90%;
+    height:8em
+}
 @keyframes letterInp {
     from {
         bottom:20px;
