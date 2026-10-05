@@ -1,5 +1,5 @@
 ## v0.4.0 
-### 2/14/2026
+### 10/5/2026
 #### Custom Games Overhaul
 - Overhauled settings for custom games. You are able to select specific words for your custom game.
 - You can set words that are from the normal or expert word lists. Words that aren't in either word list are invalid.
