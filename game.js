@@ -248,13 +248,7 @@ async function decodeCustomGameString(str) {
         console.error(e);
         throw "Malformed Data";
     }
-    //startGame(daily,hardMode=false,custom=false,seed = false,num = false,wordlength=undefined,wordRng=undefined)
     return [isDaily,isHard,isCustom,false,numWords,wordLength,wordRng];
-    // MultiWordGame.fromReplay(mainDiv,buffer).then((obj)=>{
-    //     obj.game.addEventListener("finished",async (e)=>{
-    //         endGameDialog(obj.game);
-    //     })
-    // });
 }
 
 async function createCustomGameDialog() {
