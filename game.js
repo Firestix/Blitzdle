@@ -212,10 +212,41 @@ function checkForFinishedGame(type) {
 function customGameDialog(event,gameCode=false) {
     dialog = new DialogBox({body:(div)=>{
         div.createChildNode("h2","Custom Game");
+        let textArea = document.quickElement("textarea",{id:"customGameStr",autocomplete:"off", autocorrect:"off", autocapitalize:"off", spellcheck:"false", placeholder:"🌱 Paste your custom game string here (YmxpdHpkbGUDB....)"},(textarea)=>{
+            if (gameCode) textarea.value = gameCode;
+        });
         div.createChildNode("div",(div)=>{
-            div.createChildNode("textarea",{id:"customGameStr",autocomplete:"off", autocorrect:"off", autocapitalize:"off", spellcheck:"false", placeholder:"🌱 Paste your custom game string here (YmxpdHpkbGUDB....)"},(textarea)=>{
-                if (gameCode) textarea.value = gameCode;
-            });
+            div.appendChild(textArea)
+        })
+        div.createChildNode("div",(div)=>{
+            if (gameCode) {
+                div.createChildNode("button","Copy Game String",(button)=>{
+                    button.addEventListener("click",()=>{
+                        if (textArea.value != "") {
+                            copyTextToClipboard(textArea.value,()=>{
+                                alert("Game string copied to clipboard.");
+                            })
+                        }
+                    })
+                });
+            } else {
+                div.createChildNode("button","Paste Game String",(button)=>{
+                    button.addEventListener("click",()=>{
+                        navigator.permissions.query({ name: "clipboard-read" }).then(result => {
+                            if (result.state == "granted" || result.state == "prompt") {
+                                navigator.clipboard.readText().then((result)=>{
+                                    textArea.value = result;
+                                    alert("Pasted contents of clipboard.")
+                                });
+                            }
+                        },()=>{
+                            textArea.select();
+                            document.execCommand("paste");
+                            alert("Pasted contents of clipboard.")
+                        })
+                    })
+                });
+            }
         })
         if (gameCode) {
             div.createChildNode("div",{style:"font-style: italic;"},"(Your generated game is in the text box above. Copy it to share or press Play to play it yourself.)")
