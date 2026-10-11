@@ -37,6 +37,15 @@ async function init() {
             localStorage.removeItem("gameState");
             generateMainPage();
         }
+    } else if (pageParams.get("dg")) {
+        let diff = pageParams.get("dg");
+        if (diff == "easy" || diff == "normal" || diff == "hard") {
+            if (setDailyDifficulty(mainDiv,diff)) {
+                openApp();
+            }
+        } else {
+            openApp();
+        }
     } else if (pageParams.get("qg")) {
         switch (pageParams.get("qg")) {
             case "normal":
@@ -46,19 +55,30 @@ async function init() {
                 startGame(false,true);
                 break;
             default:
-                generateMainPage();
+                openApp();
+        }
+    } else if (pageParams.get("cg")) {
+        try {
+            await startCustomGame(pageParams.get("cg"))
+        } catch (e) {
+            console.error(e);
+            openApp();
         }
     } else {
-        generateMainPage();
-        let lastVersionSeen = window.localStorage.getItem("lastVersionSeen");
-        if (!lastVersionSeen || (lastVersionSeen && lastVersionSeen != queryVars["v"].replaceAll(/[a-z]/g,""))) {
-            try {
-                openChangelogDialog();
-            } catch (e) {
-                console.error(e);
-            } finally {
-                window.localStorage.setItem("lastVersionSeen",queryVars["v"].replaceAll(/[a-z]/g,""))
-            }
+        openApp();
+    }
+}
+
+function openApp() {
+    generateMainPage();
+    let lastVersionSeen = window.localStorage.getItem("lastVersionSeen");
+    if (!lastVersionSeen || (lastVersionSeen && lastVersionSeen != queryVars["v"].replaceAll(/[a-z]/g, ""))) {
+        try {
+            openChangelogDialog();
+        } catch (e) {
+            console.error(e);
+        } finally {
+            window.localStorage.setItem("lastVersionSeen", queryVars["v"].replaceAll(/[a-z]/g, ""));
         }
     }
 }
@@ -164,9 +184,11 @@ async function setDailyDifficulty(div,difficulty) {
         let replayData = await ReplayMap.fromEncodedData(encodeBase64FromUrl(finishedGame.state));
         let gameState = await MultiWordGame.fromReplayMap(div,replayData,true);
         finishedDailyGameDialog(gameState,difficulty);
+        return finishedGame;
     } else {
         div.innerHTML = "";
         startGame(true,difficulty=="expert",false,false,difficulty=="easy" ? 1 : false);
+        return false;
     }
 }
 
@@ -216,15 +238,19 @@ function customGameDialog(event,gameCode=false) {
     },modal:true,class:"dialogBox custom",openOnCreation:true});
     dialog.addEventListener("close",async (e)=>{
         if (e.detail.usingEvent.target.innerText == "Play") {
-            let settings = [];
             try {
-                settings = await decodeCustomGameString(dialog.body.querySelector("#customGameStr").value);
-            } catch(e) {
-                alert(`Error parsing settings string: ${e}`)
+                await startCustomGame(dialog.body.querySelector("#customGameStr").value);
+            } catch (e) {
+                alert(`Error parsing settings string: ${e}`);
             }
-            if (settings.length > 0) startGame(...settings);
         }
     })
+}
+
+async function startCustomGame(customGameString) {
+    let settings = await decodeCustomGameString(customGameString);
+    if (settings.length > 0) startGame(...settings); 
+    return;
 }
 
 async function decodeCustomGameString(str) {
