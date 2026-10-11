@@ -644,21 +644,25 @@ async function shareClipboard(gameState) {
     let newClip = `Blitzdle ${daily}
 ⏱️:${time}
 ❓:${gameState.guesses.length}
-🎯:${calculateAccuracy(gameState)}${seeds}
-${window.location}`;
-    navigator.permissions.query({name: "clipboard-write"}).then(result => {
+    copyTextToClipboard(newClip,()=>{
+        alert("Results copied to clipboard.");
+    });
+}
+
+function copyTextToClipboard(newClip,callback) {
+    navigator.permissions.query({ name: "clipboard-write" }).then(result => {
         if (result.state == "granted" || result.state == "prompt") {
             navigator.clipboard.writeText(newClip).then(()=>{
-                alert("Results copied to clipboard.");
+                if (typeof callback == "function") callback();
             });
         }
-    },()=>{
-        let ta = document.body.createChildNode("textarea",newClip);
+    }, () => {
+        let ta = document.body.createChildNode("textarea", newClip);
         ta.select();
         document.execCommand("copy");
         document.body.removeChild(ta);
-        alert("Results copied to clipboard.");
-    })
+        if (typeof callback == "function") callback();
+    });
 }
 
 function downloadReplay(gameState) {
