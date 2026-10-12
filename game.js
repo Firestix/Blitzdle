@@ -676,6 +676,8 @@ async function shareClipboard(gameState) {
     let newClip = `Blitzdle ${daily}
 ⏱️:${time}
 ❓:${gameState.guesses.length}
+🎯:${calculateAccuracy(gameState)}${seeds}
+${window.location}${seedDetails ? "?cg=" + seedDetails : ""}`;
     copyTextToClipboard(newClip,()=>{
         alert("Results copied to clipboard.");
     });
