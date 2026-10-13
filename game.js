@@ -1,9 +1,4 @@
-let scriptTag = document.getElementById("gameScript");
-let queryData = [...scriptTag.src.matchAll(/[\?&]([^=&]+)(?:=([^&=]+)|)/g)];
-let queryVars = {};
-for (let q of queryData) {
-    queryVars[q[1]] = q[2];
-}
+import { queryVars } from "./modules/QueryVars.js";
 let pageParams = new URLSearchParams(window.location.search);
 
 import { marked } from "https://cdn.jsdelivr.net/npm/marked/lib/marked.esm.js";
