@@ -106,7 +106,7 @@ export class MultiWordGame extends EventTarget {
         return this.replay.wordLength;
     }
     async start() {
-        await wordLists.loadWordLists()
+        await wordLists.loadWordLists(this.wordLength)
         this.initContainer();
         let wl = this.wordLength;
         let completeWordList = wordLists.completeWordList[wl];
@@ -344,7 +344,7 @@ export class MultiWordGame extends EventTarget {
      * @returns 
      */
     static async generateGuesses(firstGuess, data) {
-        await wordLists.loadWordLists()
+        await wordLists.loadWordLists(firstGuess.length)
         let currentGuess = "";
         let lettersTyped = [...firstGuess, 13, ...data.filter(e=>e[1].type == "key").map(v=>v[1].value)];
         let guesses = [];

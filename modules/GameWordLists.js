@@ -15,8 +15,9 @@ export class GameWordLists {
     completeWordList = [];
     /** @type {WordList[]} */
     selectWordList = [];
-    async loadWordLists() {
-        for (let x = 0; x < wordListURLs.length; x++) {
+    async loadWordLists(wl = false) {
+        let xLen = wl ? wl+1 : wordListURLs.length
+        for (let x = wl || 0; x < xLen; x++) {
             if (!wordListURLs[x]) {
                 this.completeWordList[x] = this.selectWordList[x] = undefined;
             } else {
