@@ -1,5 +1,9 @@
 {
     "name": "Blitzdle",
+    "description":"Daily word game with a focus on speed.",
+    "categories":[
+      "games"
+    ],
     "icons": [
       {
         "src": "./icon192.png",
