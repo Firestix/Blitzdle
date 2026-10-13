@@ -1,3 +1,7 @@
+import { queryVars } from "./QueryVars.js";
+
+let cache = window.caches.open(queryVars["v"]);
+
 /**
  * @extends {Array<string>}
  */
@@ -47,7 +51,13 @@ export class WordList extends Array {
      * @returns 
      */
     static async fromURL(url) {
-        let wlRaw = await fetch(url).then(res=>res.text());
+        let c = await cache;
+        let wlRes = await c.match(url)
+        if (!wlRes) {
+            await c.add(url)
+            wlRes = await c.match(url)
+        }
+        let wlRaw = await wlRes.text();
         return WordList.fromArray(wlRaw.split(/\r\n|\r|\n/g));
     }
     /**
