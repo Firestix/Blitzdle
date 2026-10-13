@@ -7,9 +7,31 @@
         "type": "image/png"
       },
       {
-        "src": "./icon512.png",
-        "sizes": "512x512",
-        "type": "image/png"
+    "shortcuts": [
+      {
+        "name": "1. Easy Daily (🟢📆)",
+        "short_name": "🟢📆",
+        "url": "/Blitzdle/?dg=easy"
+      },
+      {
+        "name": "2. Normal Daily  (🟦📆)",
+        "short_name": "🟦📆",
+        "url": "/Blitzdle/?dg=normal"
+      },
+      {
+        "name": "3. Expert Daily (🔶📆)",
+        "short_name": "🔶📆",
+        "url": "/Blitzdle/?dg=hard"
+      },
+      {
+        "name": "4. Normal Random (🟦🎲)",
+        "short_name": "🟦🎲",
+        "url": "/Blitzdle/?qg=normal"
+      },
+      {
+        "name": "5. Expert Random (🔶🎲)",
+        "short_name": "🔶🎲",
+        "url": "/Blitzdle/?qg=hard"
       }
     ],
     "orientation":"portrait-primary",
