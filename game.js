@@ -17,6 +17,7 @@ let dialog;
 /** @type {GameWordLists} */
 let wordLists;
 let mainDiv = document.getElementById("game");
+let cache = window.caches.open(queryVars["v"]);
 
 async function init() {
     let gameState = window.localStorage.getItem("gameState");
@@ -457,10 +458,15 @@ async function encodeCustomGameString(hardMode, numWords, wordLength, wordIndexe
 }
 
 async function openStaticDialog(mdName) {
-    let md = await fetch(`./dialogs/${mdName}.md`);
+    let c = await cache;
+    let md = await c.match(`./dialogs/${mdName}.md`);
+    if (!md) {
+        await c.add(`./dialogs/${mdName}.md`);
+        md = await c.match(`./dialogs/${mdName}.md`);
+    }
     if (md.status !== 200) throw "File not found";
     dialog = new DialogBox({body:async (div)=>{
-        div.innerHTML = marked.parse(await fetch(`./dialogs/${mdName}.md`).then(res=>res.text()))
+        div.innerHTML = marked.parse(await md.text());
     },buttons:(div)=>{
         div.createChildNode("button",{class:"smallButton"},"Close",(button)=>{
             button.addEventListener("click",(e)=>{
