@@ -1,6 +1,8 @@
 import { queryVars } from "./modules/QueryVars.js";
+let swRegistration = undefined
 if ("serviceWorker" in navigator) {
     navigator.serviceWorker.register(`./sw.js?v=${queryVars["v"]}`,{scope:"/Blitzdle/"}).then((reg)=>{
+        swRegistration = reg;
         init();
     },(err)=>{
         console.error(err);
@@ -485,12 +487,15 @@ async function openStaticDialog(mdName) {
 async function openSettingsDialog() {
     dialog = new DialogBox({body:async (div)=>{
         div.createChildNode("h1","Settings");
-        div.createChildNode("button",{class:"smallButton"},"Clear Cache",(button)=>{
+        div.createChildNode("button",{class:"smallButton"},"Refresh Cache",(button)=>{
             button.addEventListener("click",async (e)=>{
                 if (confirm("Are you sure you want to clear the cache?")) {
                     const cacheObjects = await window.caches.keys();
                     for (let cId of cacheObjects) {
                         await caches.delete(cId);
+                    }
+                    if (swRegistration) {
+                        await swRegistration.unregister()
                     }
                     window.location.reload();
                 }
