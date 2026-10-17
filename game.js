@@ -120,7 +120,22 @@ function generateMainPage() {
             div.createChildNode("span"," and hosted by ");
             div.createChildNode("a",{href:"https://twitter.com/NYTGames",target:"_blank"},"@NYTGames.");
         });
-        div.createChildNode("br")
+        div.createChildNode("div",(div)=>{
+            window.addEventListener("appinstalled", (e) => {
+                div.parentElement.removeChild(div);
+            })
+            window.addEventListener("beforeinstallprompt",(e)=>{
+                console.log(e)
+                e.preventDefault();
+                if (div.children.length > 0) div.innerHTML = "";
+                div.createChildNode("button",{class:"smallButton"},isMobile() ? "Add to Home Screen" : "Install Blitzdle",(button)=>{
+                    button.addEventListener("click",async ()=>{
+                        let res = await e.prompt();
+                        if (res.outcome == "accepted") div.style.display = "hidden";
+                    })
+                })
+            })
+        })
         div.createChildNode("button",{class:"smallButton"},"How To Play",(button)=>{
             button.addEventListener("click",()=>{openStaticDialog("how_to_play")});
         });
