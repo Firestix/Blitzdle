@@ -1,4 +1,14 @@
 import { queryVars } from "./modules/QueryVars.js";
+if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register(`./sw.js?v=${queryVars["v"]}`,{scope:"/Blitzdle/"}).then((reg)=>{
+        init();
+    },(err)=>{
+        console.error(err);
+        init();
+    })
+} else {
+    init();
+}
 let pageParams = new URLSearchParams(window.location.search);
 
 import { marked } from "https://cdn.jsdelivr.net/npm/marked/lib/marked.esm.js";
@@ -713,5 +723,3 @@ function downloadFile(filename,data) {
 function openChangelogDialog() {
     openStaticDialog(`changelog_${queryVars["v"].replaceAll(/[a-z]/g,"")}`);
 }
-
-init();
