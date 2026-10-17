@@ -94,7 +94,11 @@ function generateMainPage() {
     mainDiv.createChildNode("div",{class:"mainMenuContainer"},(div)=>{
         //div.createChildNode("h1","Blitzdle");
         div.createChildNode("div",{class:"title"},(div)=>{
-            createTitle(div)
+            createTitle(div);
+            div.createChildNode("br")
+            div.createChildNode("div",{class:"version"},` v${queryVars["v"]}`,(div)=>{
+                div.addEventListener("click",()=>{openChangelogDialog()})
+            });
         });
         div.createChildNode("div",(div)=>{
             div.createChildNode("span","Based on ")
@@ -159,11 +163,6 @@ function generateMainPage() {
         });
         div.createChildNode("button",{class:"smallButton"},"Credits",(button)=>{
             button.addEventListener("click",()=>{openStaticDialog("credits")});
-        });
-        div.createChildNode("br");
-        div.createChildNode("br");
-        div.createChildNode("div",{class:"version"},` v${queryVars["v"]}`,(div)=>{
-            div.addEventListener("click",()=>{openChangelogDialog()})
         });
     })
 }
