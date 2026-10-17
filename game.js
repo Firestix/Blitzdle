@@ -168,6 +168,9 @@ function generateMainPage() {
         })
         div.createChildNode("br");
         div.createChildNode("br");
+        div.createChildNode("button",{class:"smallButton"},"Settings",(button)=>{
+            button.addEventListener("click",()=>{openSettingsDialog()});
+        });
         div.createChildNode("button",{class:"smallButton"},"View Replay",(button)=>{
             button.addEventListener("click",replayDialog);
         });
@@ -470,6 +473,29 @@ async function openStaticDialog(mdName) {
     if (md.status !== 200) throw "File not found";
     dialog = new DialogBox({body:async (div)=>{
         div.innerHTML = marked.parse(await md.text());
+    },buttons:(div)=>{
+        div.createChildNode("button",{class:"smallButton"},"Close",(button)=>{
+            button.addEventListener("click",(e)=>{
+                dialog.close(e);
+            })
+        });
+    },modal:true,class:"dialogBox howtoplay",openOnCreation:true})
+}
+
+async function openSettingsDialog() {
+    dialog = new DialogBox({body:async (div)=>{
+        div.createChildNode("h1","Settings");
+        div.createChildNode("button",{class:"smallButton"},"Clear Cache",(button)=>{
+            button.addEventListener("click",async (e)=>{
+                if (confirm("Are you sure you want to clear the cache?")) {
+                    const cacheObjects = await window.caches.keys();
+                    for (let cId of cacheObjects) {
+                        await caches.delete(cId);
+                    }
+                    window.location.reload();
+                }
+            })
+        });
     },buttons:(div)=>{
         div.createChildNode("button",{class:"smallButton"},"Close",(button)=>{
             button.addEventListener("click",(e)=>{
