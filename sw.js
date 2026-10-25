@@ -4,6 +4,13 @@ for (let q of queryData) {
     queryVars[q[1]] = q[2];
 }
 
+let networkFirstMode = false;
+
+if (queryVars.hasOwnProperty("rmsw")) {
+    networkFirstMode = true;
+    console.info("Service Worker operating in network first mode.")
+}
+
 let baseURL = location.pathname.split("sw.js")[0];
 
 const precacheResources = [
@@ -74,19 +81,22 @@ async function precache() {
 }
 
 self.addEventListener("fetch",(e)=>{
-    const url = new URL(e.request.url);
-    if (url.origin === location.origin) {
-        if (url.pathname == baseURL || url.pathname == baseURL+"index.html" || url.pathname == baseURL+"game.js") {
-            e.respondWith(networkFirst(e.request))
-        } else if (precacheResources.includes(url.pathname)) {
+    if (networkFirstMode) {
+        e.respondWith(networkFirst(e.request))
+    } else {
+        const url = new URL(e.request.url);
+        if (url.origin === location.origin) {
+            if (url.pathname == baseURL || url.pathname == baseURL+"index.html" || url.pathname == baseURL+"game.js") {
+                e.respondWith(networkFirst(e.request))
+            } else if (precacheResources.includes(url.pathname)) {
+                e.respondWith(cacheFirst(e.request))
+            } else {
+                e.respondWith(cacheFirstWithRefresh(e.request))
+            }
+        } else if (allowedOrigins.includes(url.origin)) {
             e.respondWith(cacheFirst(e.request))
-        } else {
-            e.respondWith(cacheFirstWithRefresh(e.request))
         }
-    } else if (allowedOrigins.includes(url.origin)) {
-        e.respondWith(cacheFirst(e.request))
     }
-    
 })
 
 self.addEventListener("install",(e)=>{

@@ -1,7 +1,9 @@
 import { queryVars } from "./modules/QueryVars.js";
+let pageParams = new URLSearchParams(window.location.search);
+
 let swRegistration = undefined
 if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.register(`./sw.js?v=${queryVars["v"]}`,{scope:"/Blitzdle/"}).then((reg)=>{
+    navigator.serviceWorker.register(`./sw.js?v=${queryVars["v"]}${pageParams.get("rmsw") !== null || pageParams.get("vscode-livepreview") ? "&rmsw" : ""}`,{scope:"/Blitzdle/"}).then((reg)=>{
         swRegistration = reg;
         init();
     },(err)=>{
@@ -11,7 +13,6 @@ if ("serviceWorker" in navigator) {
 } else {
     init();
 }
-let pageParams = new URLSearchParams(window.location.search);
 
 import { marked } from "https://cdn.jsdelivr.net/npm/marked/lib/marked.esm.js";
 
