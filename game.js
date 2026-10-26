@@ -47,7 +47,7 @@ async function init() {
         }
     } else if (pageParams.get("dg")) {
         let diff = pageParams.get("dg");
-        if (diff == "easy" || diff == "normal" || diff == "hard") {
+        if (diff == "easy" || diff == "normal" || diff == "expert") {
             if (setDailyDifficulty(mainDiv,diff)) {
                 openApp();
             }

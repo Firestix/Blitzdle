@@ -38,7 +38,7 @@
       {
         "name": "3. Expert Daily (🔶📆)",
         "short_name": "🔶📆",
-        "url": "/Blitzdle/?dg=hard"
+        "url": "/Blitzdle/?dg=expert"
       },
       {
         "name": "4. Normal Random (🟦🎲)",
@@ -48,7 +48,7 @@
       {
         "name": "5. Expert Random (🔶🎲)",
         "short_name": "🔶🎲",
-        "url": "/Blitzdle/?qg=hard"
+        "url": "/Blitzdle/?qg=expert"
       }
     ],
     "orientation":"portrait-primary",
