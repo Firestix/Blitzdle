@@ -184,18 +184,18 @@ function generateMainPage() {
         div.createChildNode("button",{class:"difficultyButton"},"🌱Play",(button)=>{
             button.addEventListener("click",customGameDialog);
         })
-        div.createChildNode("button",{class:"difficultyButton"},"✒️Create",(button)=>{
+        div.createChildNode("button",{class:"difficultyButton"},"📝Create",(button)=>{
             button.addEventListener("click",createCustomGameDialog);
         })
         div.createChildNode("br");
         div.createChildNode("br");
-        div.createChildNode("button",{class:"smallButton"},"Settings",(button)=>{
+        div.createChildNode("button",{class:"smallButton"},"📋Settings",(button)=>{
             button.addEventListener("click",()=>{openSettingsDialog()});
         });
-        div.createChildNode("button",{class:"smallButton"},"View Replay",(button)=>{
+        div.createChildNode("button",{class:"smallButton"},"📺View Replay",(button)=>{
             button.addEventListener("click",replayDialog);
         });
-        div.createChildNode("button",{class:"smallButton"},"Credits",(button)=>{
+        div.createChildNode("button",{class:"smallButton"},"🪪Credits",(button)=>{
             button.addEventListener("click",()=>{openStaticDialog("credits")});
         });
     })
