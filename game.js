@@ -591,7 +591,7 @@ function startGame(daily,hardMode=false,custom=false,seed = false,num = false,wo
     } else {
         settings.seed = gameSeed
     }
-    window.history.replaceState(null,"","./");
+    if (pageParams.get("rmsw") !== null) window.history.replaceState(null,"","./");
     let mwg = new MultiWordGame(mainDiv,settings);
     mwg.addEventListener("finished",(e)=>{
         endGameDialog(e.detail.gameState);
