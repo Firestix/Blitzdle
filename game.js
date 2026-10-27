@@ -520,6 +520,19 @@ async function openSettingsDialog() {
                 select.value = appSettings.settings.displayMode;
             })
         })
+        div.createChildNode("div",(div)=>{
+            div.createChildNode("label","Timer Display: ")
+            div.createChildNode("select",(select)=>{
+                select.createChildNode("option",{value:"normal"},"⏱️HH:MM:SS:mm");
+                select.createChildNode("option",{value:"short"},"⏱️HH:MM:SS");
+                select.createChildNode("option",{value:"none"},"Hide Timer");
+                select.addEventListener("input",()=>{
+                    appSettings.settings.timer = select.value;
+                    appSettings.store()
+                })
+                select.value = appSettings.settings.timer;
+            })
+        })
         div.createChildNode("button",{class:"smallButton"},"Refresh Cache",(button)=>{
             button.addEventListener("click",async (e)=>{
                 if (confirm("Are you sure you want to clear the cache?")) {

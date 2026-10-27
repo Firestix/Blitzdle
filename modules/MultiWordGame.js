@@ -2,6 +2,7 @@ import { GameWordLists } from "./GameWordLists.js";
 import { WordGame } from "./WordGame.js";
 import { ReplayMap } from "./Replay.js";
 import { Toaster } from "./Toaster.js";
+import { appSettings } from "./AppSettings.js";
 
 const wordLists = new GameWordLists();
 
@@ -293,23 +294,28 @@ export class MultiWordGame extends EventTarget {
         });
     }
     buildTimerElement() {
-        this.timerElement = document.quickElement("div", { class: "timer" }, "00.00");
+        if (appSettings.settings.timer !== "none") this.timerElement = document.quickElement("div", { class: "timer" }, MultiWordGame.formatTime(0));
     }
     startTimer() {
-        window.requestAnimationFrame(() => { this.updateTimer(); });
+        if (appSettings.settings.timer !== "none") {
+            window.requestAnimationFrame(() => { this.updateTimer(); });
+        }
     }
     updateTimer() {
-        if (this.timerElement) {
-            if (this.gameStarted) {
-                this.timerElement.innerHTML = MultiWordGame.formatTime(Date.now() - this.startTime);
-            } else {
-                this.timerElement.innerHTML = "00.00";
+        if (appSettings.settings.timer !== "none") {
+            let useMills = appSettings.settings.timer == "normal";
+            if (this.timerElement) {
+                if (this.gameStarted) {
+                    this.timerElement.innerHTML = MultiWordGame.formatTime(Date.now() - this.startTime, useMills);
+                } else {
+                    this.timerElement.innerHTML = MultiWordGame.formatTime(0,useMills);
+                }
             }
-        }
-        if (this.gameFinished) {
-            this.timerElement.innerHTML = MultiWordGame.formatTime(this.replay.timeOfLastKeyPress());
-        } else {
-            window.requestAnimationFrame(() => { this.updateTimer(); });
+            if (this.gameFinished) {
+                this.timerElement.innerHTML = MultiWordGame.formatTime(this.replay.timeOfLastKeyPress(),useMills);
+            } else {
+                window.requestAnimationFrame(() => { this.updateTimer(); });
+            }
         }
     }
     initContainer() {
@@ -435,8 +441,8 @@ export class MultiWordGame extends EventTarget {
         let hours = Math.floor(mills / 1000 / 60 / 60);
         let minutes = Math.floor(mills / 1000 / 60) % 60;
         let seconds = Math.floor(mills / 1000) % 60;
-        let millis = mills.toString().slice(-3).slice(0, 2);
-        let str = `${mills >= (1000 * 60 * 60) ? hours.toString().padStart(2, "0") + ":" : ""}${mills >= (1000 * 60) ? minutes.toString().padStart(2, "0") + ":" : ""}${seconds.toString().padStart(2, "0")}${useMills ? "." + millis : ""}`;
+        let millis = useMills ? "." + mills.toString().slice(-3).slice(0, 2).padStart(2,"0") : "";
+        let str = `${mills >= (1000 * 60 * 60) ? hours.toString().padStart(2, "0") + ":" : ""}${mills >= (1000 * 60) ? minutes.toString().padStart(2, "0") + ":" : ""}${seconds.toString().padStart(2, "0")}${millis}`;
         return str;
     }
 }
