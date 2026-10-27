@@ -1,0 +1,1 @@
+export const pageParams = new URLSearchParams(window.location.search);

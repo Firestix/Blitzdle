@@ -1,5 +1,5 @@
 import { queryVars } from "./modules/QueryVars.js";
-let pageParams = new URLSearchParams(window.location.search);
+import { pageParams } from "./modules/PageParams.js";
 
 let swRegistration = undefined
 if ("serviceWorker" in navigator) {
