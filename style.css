@@ -112,7 +112,7 @@ button:hover {
     padding: 15px 7px;
     border-radius: 10px 10px 0px 0px;
     bottom: 0;
-    z-index: 1;
+    z-index: 2;
     box-shadow: #0007 0 0 10px;
 }
 .keyboardHeader {
@@ -440,6 +440,37 @@ button:hover {
 #customGameStr {
     width:90%;
     height:8em
+}
+.toasterContainer {
+    position: fixed;
+    bottom: 154px;
+    width: 100%;
+    text-align: center;
+    z-index: 1;
+}
+.toast {
+    width: 95%;
+    max-width: 400px;
+    text-align: center;
+    background-color: var(--theme-background-hover);
+    margin: auto;
+    font-weight: bold;
+    padding-top: 0;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-bottom: 30px;
+    border-radius: 10px 10px 0 0;
+    transition: padding-bottom ease-out 0.25s;
+    box-shadow: #0007 0 0 10px;
+}
+.toast.toastin {
+    padding-bottom: 50px;
+}
+.toast.green {
+    background-color: var(--theme-background-hint-correct);
+}
+.toast.yellow {
+    background-color: var(--theme-background-hint-hasletter);
 }
 @keyframes letterInp {
     from {
