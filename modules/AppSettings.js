@@ -21,7 +21,7 @@ class AppSettings {
      */
     static getTemplate () {
         return {
-
+            displayMode:"auto",
         }
     }
 }

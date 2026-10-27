@@ -17,6 +17,27 @@
     --theme-background-hint-incorrect:#444;
     --theme-color-hint-incorrect:#AAA;
 }
+
+:root[class="dark"] {
+    --theme-background-base:#222;
+    --theme-background-keyboard:#333;
+    --theme-background-element:#444;
+    --theme-background-hover:#666;
+    --theme-color-base:#ccc;
+    --theme-color-hover:white;
+    --theme-background-hint-correct:#393;
+    --theme-background-hint-hasletter:#993;
+    --theme-background-hint-incorrect:#666;
+    --theme-color-hint-incorrect:#444;
+}
+
+:root[class="dark"] a {
+    color:#00aaff;
+}
+:root[class="dark"] a:visited {
+    color:#aa00ff;
+}
+
 body {
     overflow-x: hidden;
     background: var(--theme-background-base);
@@ -509,10 +530,28 @@ button:hover {
         --theme-background-hint-incorrect:#666;
         --theme-color-hint-incorrect:#444;
     }
+    :root[class="light"] {
+        --theme-background-base:white;
+        --theme-background-keyboard:#eee;
+        --theme-background-element:#bbb;
+        --theme-background-hover:#999;
+        --theme-color-base:#222;
+        --theme-color-hover:black;
+        --theme-background-hint-correct:#4A4;
+        --theme-background-hint-hasletter:#AA4;
+        --theme-background-hint-incorrect:#444;
+        --theme-color-hint-incorrect:#AAA;
+    }
     a {
         color:#00aaff;
     }
     a:visited {
         color:#aa00ff;
+    }
+    :root[class="light"] a{
+        color:#0000EE;
+    }
+    :root[class="light"] a:visited{
+        color:#551A8B;
     }
 }

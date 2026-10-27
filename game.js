@@ -1,5 +1,8 @@
 import { queryVars } from "./modules/QueryVars.js";
 import { pageParams } from "./modules/PageParams.js";
+import { appSettings } from "./modules/AppSettings.js";
+
+setDisplayMode(appSettings.settings.displayMode)
 
 let swRegistration = undefined
 if ("serviceWorker" in navigator) {
@@ -503,6 +506,19 @@ async function openStaticDialog(mdName) {
 async function openSettingsDialog() {
     dialog = new DialogBox({body:async (div)=>{
         div.createChildNode("h1","Settings");
+        div.createChildNode("div",(div)=>{
+            div.createChildNode("label","Appearance: ")
+            div.createChildNode("select",(select)=>{
+                select.createChildNode("option",{value:"auto"},"Use Device Theme");
+                select.createChildNode("option",{value:"light"},"Light Theme");
+                select.createChildNode("option",{value:"dark"},"Dark Theme");
+                select.addEventListener("input",()=>{
+                    appSettings.settings.displayMode = select.value;
+                    setDisplayMode(appSettings.settings.displayMode);
+                    appSettings.store()
+                })
+            })
+        })
         div.createChildNode("button",{class:"smallButton"},"Refresh Cache",(button)=>{
             button.addEventListener("click",async (e)=>{
                 if (confirm("Are you sure you want to clear the cache?")) {
@@ -748,6 +764,23 @@ function copyTextToClipboard(newClip,callback) {
         document.body.removeChild(ta);
         if (typeof callback == "function") callback();
     });
+}
+
+function setDisplayMode(mode) {
+    const body = document.documentElement;
+    switch(mode) {
+        case "light":
+            body.classList.remove("dark");
+            body.classList.add("light");
+            break;
+        case "dark":
+            body.classList.remove("light");
+            body.classList.add("dark");
+            break;
+        default:
+            body.classList.remove("light");
+            body.classList.remove("dark");
+    }
 }
 
 function downloadReplay(gameState) {
