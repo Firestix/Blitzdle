@@ -402,6 +402,9 @@ button:hover {
 .timer::before {
     content: "⏱️";
 }
+.guesses::before {
+    content: "❓";
+}
 .wordGameIndex {
     width: 100%;
     text-align: center;

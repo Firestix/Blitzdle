@@ -24,6 +24,7 @@ class AppSettings {
             displayMode:"auto",
             timer:"normal",
             shareLink:true,
+            showGuesses:true,
         }
     }
 }

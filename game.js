@@ -543,6 +543,16 @@ async function openSettingsDialog() {
             })
             div.createChildNode("label",{for:"shareLink"},"Add app link to share text")
         })
+        div.createChildNode("div",(div)=>{
+            div.createChildNode("input",{type:"checkbox",id:"showGuesses",class:"settingCheck"},(check)=>{
+                check.checked = appSettings.settings.showGuesses;
+                check.addEventListener("click",()=>{
+                    appSettings.settings.showGuesses = check.checked;
+                    appSettings.store()
+                })
+            })
+            div.createChildNode("label",{for:"showGuesses"},"Show guess count during gameplay")
+        })
         div.createChildNode("button",{class:"smallButton"},"Refresh Cache",(button)=>{
             button.addEventListener("click",async (e)=>{
                 if (confirm("Are you sure you want to clear the cache?")) {

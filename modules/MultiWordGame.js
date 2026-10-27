@@ -34,6 +34,8 @@ export class MultiWordGame extends EventTarget {
     replayReader;
     /** @type {HTMLDivElement} */
     timerElement;
+    /** @type {HTMLDivElement} */
+    guessesElement;
     /** @type {Date} */
     expire;
     /** @type {Toaster} */
@@ -233,6 +235,7 @@ export class MultiWordGame extends EventTarget {
     }
     buildUnusedLettersElements() {
         this.buildTimerElement();
+        this.buildGuessesElement();
         this.unusedLettersContainer.innerHTML = "";
         let usedLetters = [];
         for (let guess of this.guesses) {
@@ -248,9 +251,16 @@ export class MultiWordGame extends EventTarget {
             ];
             div.createChildNode("div", { class: "keyboardHeader" }, (div) => {
                 div.createChildNode("div", `Blitzdle ${this.isHard ? "🔶" : this.isEasy ? "🟢" : "🟦"}${this.isDaily ? "📆" : this.isCustom ? "🔧" : "🎲"}`);
-                div.createChildNode("div", (div) => {
-                    div.appendChild(this.timerElement);
-                });
+                if (appSettings.settings.showGuesses) {
+                    div.createChildNode("div", (div) => {
+                        div.appendChild(this.guessesElement);
+                    });
+                }
+                if (appSettings.settings.timer !== "none") {
+                    div.createChildNode("div", (div) => {
+                        div.appendChild(this.timerElement);
+                    });
+                }
             });
             let hintData = {};
             for (let game of this.games) {
@@ -317,6 +327,9 @@ export class MultiWordGame extends EventTarget {
                 window.requestAnimationFrame(() => { this.updateTimer(); });
             }
         }
+    }
+    buildGuessesElement() {
+        if (appSettings.settings.showGuesses) this.guessesElement = document.quickElement("div", { class: "guesses" }, this.guesses.length.toString());
     }
     initContainer() {
         this.container.innerHTML = "";
