@@ -1,4 +1,5 @@
 import { GuessData } from "./GuessData.js";
+/** @import { Toaster } from "./Toaster.js" */
 
 export class WordGame {
     /** @type {string} */
@@ -14,15 +15,19 @@ export class WordGame {
     solved = false;
     /** @type {GuessData[]} */
     guesses = [];
+    /** @type {Toaster} */
+    toaster;
     /**
      * Creates a new instance of the word game.
      * @param {number} index
      * @param {string} word
+     * @param {Toaster} toaster
      */
-    constructor(elem, index, word, guesses = []) {
+    constructor(elem, index, word, guesses = [], toaster) {
         this.element = elem;
         this.#answer = word;
         this.index = index;
+        this.toaster = toaster;
         this.buildElements();
         if (guesses.length > 0) {
             for (let x = guesses.length - 1; x >= 0; x--) {
@@ -43,6 +48,7 @@ export class WordGame {
     guess(word) {
         if (word == this.#answer) {
             this.solved = true;
+            this.toaster.push("green",`Word ${this.index+1} solved: ${this.#answer}`);
         }
         let guessdata = this.appendGuess(word);
         this.guesses.unshift(guessdata);

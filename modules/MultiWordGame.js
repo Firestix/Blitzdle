@@ -1,6 +1,7 @@
 import { GameWordLists } from "./GameWordLists.js";
 import { WordGame } from "./WordGame.js";
 import { ReplayMap } from "./Replay.js";
+import { Toaster } from "./Toaster.js";
 
 const wordLists = new GameWordLists();
 
@@ -34,6 +35,8 @@ export class MultiWordGame extends EventTarget {
     timerElement;
     /** @type {Date} */
     expire;
+    /** @type {Toaster} */
+    toaster;
     /**
      * 
      * @param {Element} elem 
@@ -120,7 +123,7 @@ export class MultiWordGame extends EventTarget {
         }
         for (let x = 0, xlen = listToUse.length; x < xlen; x++) {
             let div = this.gamesContainer.createChildNode("div", { class: "gameContainer" });
-            this.games.push(new WordGame(div, x, listToUse[x], this.guesses));
+            this.games.push(new WordGame(div, x, listToUse[x], this.guesses, this.toaster));
         }
         this.buildUnusedLettersElements();
         if (!this.isReplay) {
@@ -314,6 +317,7 @@ export class MultiWordGame extends EventTarget {
         this.container.dataset.wordlength = this.wordLength;
         this.guessContainer = this.container.createChildNode("div", { class: "guessContainer" });
         this.unusedLettersContainer = this.container.createChildNode("div", { class: "unusedLettersContainer" });
+        this.toaster = new Toaster(this.container);
         // this.buildUnusedLettersElements();
         this.gamesContainer = this.container.createChildNode("div", { class: "gamesContainer" });
         this.buildGuessContainerElements();
