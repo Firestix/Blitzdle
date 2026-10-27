@@ -143,7 +143,7 @@ function generateMainPage() {
         div.createChildNode("button",{class:"smallButton"},"How To Play",(button)=>{
             button.addEventListener("click",()=>{openStaticDialog("how_to_play")});
         });
-        div.createChildNode("h2","Daily");
+        div.createChildNode("h2","📆Daily");
         div.createChildNode("button",{class:"difficultyButton"},(button)=>{
             button.createChildNode("div","🟢Easy");
             button.addEventListener("click",()=>{
@@ -164,7 +164,7 @@ function generateMainPage() {
                 setDailyDifficulty(div,"expert");
             });
         });
-        div.createChildNode("h2","Random");
+        div.createChildNode("h2","🎲Random");
         div.createChildNode("button",{class:"difficultyButton"},(button)=>{
             button.createChildNode("div","🟦Normal");
             button.addEventListener("click",()=>{
@@ -180,11 +180,11 @@ function generateMainPage() {
                 startGame(false,true);
             });
         });
-        div.createChildNode("h2","Custom");
+        div.createChildNode("h2","🔧Custom");
         div.createChildNode("button",{class:"difficultyButton"},"🌱Play",(button)=>{
             button.addEventListener("click",customGameDialog);
         })
-        div.createChildNode("button",{class:"difficultyButton"},"🔧Create",(button)=>{
+        div.createChildNode("button",{class:"difficultyButton"},"✒️Create",(button)=>{
             button.addEventListener("click",createCustomGameDialog);
         })
         div.createChildNode("br");
