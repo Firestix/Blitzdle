@@ -23,6 +23,7 @@ class AppSettings {
         return {
             displayMode:"auto",
             timer:"normal",
+            shareLink:true,
         }
     }
 }

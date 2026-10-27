@@ -533,6 +533,16 @@ async function openSettingsDialog() {
                 select.value = appSettings.settings.timer;
             })
         })
+        div.createChildNode("div",(div)=>{
+            div.createChildNode("input",{type:"checkbox",id:"shareLink",class:"settingCheck"},(check)=>{
+                check.checked = appSettings.settings.shareLink;
+                check.addEventListener("click",()=>{
+                    appSettings.settings.shareLink = check.checked;
+                    appSettings.store()
+                })
+            })
+            div.createChildNode("label",{for:"shareLink"},"Add app link to share text")
+        })
         div.createChildNode("button",{class:"smallButton"},"Refresh Cache",(button)=>{
             button.addEventListener("click",async (e)=>{
                 if (confirm("Are you sure you want to clear the cache?")) {
@@ -758,7 +768,7 @@ async function shareClipboard(gameState) {
 ⏱️:${time}
 ❓:${gameState.guesses.length}
 🎯:${calculateAccuracy(gameState)}${seeds}
-${window.location}${seedDetails ? "?cg=" + seedDetails : ""}`;
+${appSettings.settings.shareLink ? window.location + (seedDetails ? "?cg=" + seedDetails : "") : ""}`;
     copyTextToClipboard(newClip,()=>{
         alert("Results copied to clipboard.");
     });
