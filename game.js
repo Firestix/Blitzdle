@@ -703,15 +703,15 @@ function endGameDialog(gameState) {
 
 function createStatBlock(div,gameState){
     div.createChildNode("div",{class:"stat"},(div)=>{
-        div.createChildNode("span","Time:");
+        div.createChildNode("span","⏱️Time:");
         div.createChildNode("span",MultiWordGame.formatTime(gameState.replay.timeOfLastKeyPress()));
     });
     div.createChildNode("div",{class:"stat"},(div)=>{
-        div.createChildNode("span","Guesses:");
+        div.createChildNode("span","❓Guesses:");
         div.createChildNode("span",gameState.guesses.length.toString());
     });
     div.createChildNode("div",{class:"stat"},(div)=>{
-        div.createChildNode("span","Accuracy:");
+        div.createChildNode("span","🎯Accuracy:");
         div.createChildNode("span",calculateAccuracy(gameState));
     });
 }
