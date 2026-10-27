@@ -517,6 +517,7 @@ async function openSettingsDialog() {
                     setDisplayMode(appSettings.settings.displayMode);
                     appSettings.store()
                 })
+                select.value = appSettings.settings.displayMode;
             })
         })
         div.createChildNode("button",{class:"smallButton"},"Refresh Cache",(button)=>{
