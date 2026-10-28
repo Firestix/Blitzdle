@@ -16,6 +16,7 @@
     --theme-background-hint-hasletter:#AA4;
     --theme-background-hint-incorrect:#444;
     --theme-color-hint-incorrect:#AAA;
+    --theme-background-warning:#A44;
 }
 
 :root[class="dark"] {
@@ -29,6 +30,7 @@
     --theme-background-hint-hasletter:#993;
     --theme-background-hint-incorrect:#666;
     --theme-color-hint-incorrect:#444;
+    --theme-background-warning:#933;
 }
 
 :root[class="dark"] a {
@@ -52,6 +54,69 @@ button:hover {
     background-color: var(--theme-background-hover);
     color: var(--theme-color-hover);
     cursor: pointer;
+}
+select {
+    font-size: 16pt;
+    font-weight: bold;
+    padding: 10px;
+    border-radius: 30px;
+    border: none;
+    margin: 5px;
+    color: var(--theme-color-base);
+    background-color: var(--theme-background-element);
+}
+.wordlist input[type="text"] {
+    font-size: 24pt;
+    margin: 2px 0;
+    border: none;
+    border-radius: 30px;
+    color: var(--theme-color-base);
+    background-color: var(--theme-background-element);
+    text-align: center;
+    font-weight: 700;
+    width: 4em;
+}
+.wordlist > div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.wordlist > div:first-child input[type="text"] {
+    margin-right: 33px;
+}
+textarea {
+    background-color: var(--theme-background-element);
+    color: var(--theme-color-base);
+    border: none;
+    padding: 10px;
+    border-radius: 10px;
+    font-weight: bold;
+}
+.settingCheck {
+    display: none;
+}
+.settingCheck + label {
+    display: block;
+    padding: 5px 20px;
+    background-color: var(--theme-background-element);
+    color: var(--theme-color-base);
+    margin: 5px 0;
+    font-weight: bold;
+    transition: background-color .25s;
+    border-radius: 30px;
+}
+.settingCheck:checked + label  {
+    background-color: var(--theme-background-hint-correct);
+    color: var(--theme-color-base);
+}
+.settingCheck + label::before {
+  content: "❌";
+}
+.settingCheck:checked + label::before {
+  content: "✔️";
+}
+.warningButton {
+    background-color:var(--theme-background-warning);
 }
 .dialogModal {
     position: fixed;
@@ -535,6 +600,7 @@ button:hover {
         --theme-background-hint-hasletter:#993;
         --theme-background-hint-incorrect:#666;
         --theme-color-hint-incorrect:#444;
+        --theme-background-warning:#933;
     }
     :root[class="light"] {
         --theme-background-base:white;
@@ -547,6 +613,7 @@ button:hover {
         --theme-background-hint-hasletter:#AA4;
         --theme-background-hint-incorrect:#444;
         --theme-color-hint-incorrect:#AAA;
+        --theme-background-warning:#A44;
     }
     a {
         color:#00aaff;

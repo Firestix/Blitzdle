@@ -248,7 +248,7 @@ function customGameDialog(event,gameCode=false) {
         })
         div.createChildNode("div",(div)=>{
             if (gameCode) {
-                div.createChildNode("button","Copy Game String",(button)=>{
+                div.createChildNode("button",{class:"smallButton"},"Copy Game String",(button)=>{
                     button.addEventListener("click",()=>{
                         if (textArea.value != "") {
                             copyTextToClipboard(textArea.value,()=>{
@@ -258,7 +258,7 @@ function customGameDialog(event,gameCode=false) {
                     })
                 });
             } else {
-                div.createChildNode("button","Paste Game String",(button)=>{
+                div.createChildNode("button",{class:"smallButton"},"Paste Game String",(button)=>{
                     button.addEventListener("click",()=>{
                         navigator.permissions.query({ name: "clipboard-read" }).then(result => {
                             if (result.state == "granted" || result.state == "prompt") {
@@ -402,7 +402,7 @@ async function createCustomGameDialog() {
                     })
                 });
                 if (!removeMinusButton) {
-                    div.createChildNode("button","-",(button)=>{
+                    div.createChildNode("button",{class:"smallButton"},"-",(button)=>{
                         button.addEventListener("click",()=>{
                             div.parentElement.removeChild(div);
                         })
@@ -424,7 +424,7 @@ async function createCustomGameDialog() {
         });
         div.createChildNode("h3","Words");
         div.appendChild(wordListDiv);
-        div.createChildNode("button","Add Word",(button)=>{
+        div.createChildNode("button",{class:"smallButton"},"Add Word",(button)=>{
             button.addEventListener("click",()=>{
                 addWord(wordListDiv);
             })
@@ -573,7 +573,8 @@ async function openSettingsDialog() {
             })
             div.createChildNode("label",{for:"enableToast"},"Show popup notifications during gameplay")
         })
-        div.createChildNode("button",{class:"smallButton"},"Refresh Cache",(button)=>{
+        div.createChildNode("br");
+        div.createChildNode("button",{class:"smallButton warningButton"},"Refresh Cache",(button)=>{
             button.addEventListener("click",async (e)=>{
                 if (confirm("Are you sure you want to clear the cache?")) {
                     const cacheObjects = await window.caches.keys();
