@@ -553,6 +553,16 @@ async function openSettingsDialog() {
             })
             div.createChildNode("label",{for:"showGuesses"},"Show guess count during gameplay")
         })
+        div.createChildNode("div",(div)=>{
+            div.createChildNode("input",{type:"checkbox",id:"showAccuracy",class:"settingCheck"},(check)=>{
+                check.checked = appSettings.settings.showAccuracy;
+                check.addEventListener("click",()=>{
+                    appSettings.settings.showAccuracy = check.checked;
+                    appSettings.store()
+                })
+            })
+            div.createChildNode("label",{for:"showAccuracy"},"Show accuracy during gameplay")
+        })
         div.createChildNode("button",{class:"smallButton"},"Refresh Cache",(button)=>{
             button.addEventListener("click",async (e)=>{
                 if (confirm("Are you sure you want to clear the cache?")) {
@@ -722,7 +732,7 @@ function createStatBlock(div,gameState){
     });
     div.createChildNode("div",{class:"stat"},(div)=>{
         div.createChildNode("span","🎯Accuracy:");
-        div.createChildNode("span",calculateAccuracy(gameState));
+        div.createChildNode("span",`${gameState.accuracy.toFixed(1)}%`);
     });
 }
 
@@ -757,12 +767,6 @@ function finishedDailyGameDialog(gameState) {
     return dialog;
 }
 
-function calculateAccuracy(gameState) {
-    let enterKeys = gameState.replay.actions.filter(v=>v[1].type == "key" && v[1].value == 13).length+1;
-    let acc = gameState.guesses.length / enterKeys * 100;
-    return acc.toFixed(1) + "%";
-}
-
 async function shareClipboard(gameState) {
     let startDate = new Date(gameState.replay.timestamp);
     let time = MultiWordGame.formatTime(gameState.replay.timeOfLastKeyPress());
@@ -777,7 +781,7 @@ async function shareClipboard(gameState) {
     let newClip = `Blitzdle ${daily}
 ⏱️:${time}
 ❓:${gameState.guesses.length}
-🎯:${calculateAccuracy(gameState)}${seeds}
+🎯:${gameState.accuracy.toFixed(1)}%${seeds}
 ${appSettings.settings.shareLink ? window.location + (seedDetails ? "?cg=" + seedDetails : "") : ""}`;
     copyTextToClipboard(newClip,()=>{
         alert("Results copied to clipboard.");

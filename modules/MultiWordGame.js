@@ -36,6 +36,8 @@ export class MultiWordGame extends EventTarget {
     timerElement;
     /** @type {HTMLDivElement} */
     guessesElement;
+    /** @type {HTMLDivElement} */
+    accuracyElement;
     /** @type {Date} */
     expire;
     /** @type {Toaster} */
@@ -111,6 +113,10 @@ export class MultiWordGame extends EventTarget {
     get wordLength() {
         return this.replay.wordLength;
     }
+    get accuracy() {
+        let enterKeys = this.replay.actions.filter(v=>v[1].type == "key" && v[1].value == 13).length+1;
+        return this.guesses.length > 0 ? this.guesses.length / enterKeys * 100 : 100;
+    }
     async start() {
         await wordLists.loadWordLists(this.wordLength)
         this.initContainer();
@@ -168,6 +174,9 @@ export class MultiWordGame extends EventTarget {
             this.buildGuessContainerElements();
         } else {
             this.guessContainer.classList.add("inpErr");
+            if (this.accuracyElement) {
+                this.accuracyElement.innerHTML = `${this.accuracy.toFixed(1)}%`;
+            }
         }
         if (!this.gameFinished && !this.isReplay) this.replayReader.readAsDataURL(new Blob([this.replay.encode()], { type: "application/octet-stream" }));
         this.buildUnusedLettersElements();
@@ -235,6 +244,7 @@ export class MultiWordGame extends EventTarget {
     }
     buildUnusedLettersElements() {
         this.buildTimerElement();
+        this.buildAccuracyElement();
         this.buildGuessesElement();
         this.unusedLettersContainer.innerHTML = "";
         let usedLetters = [];
@@ -250,7 +260,12 @@ export class MultiWordGame extends EventTarget {
                 [{ "↩": 13 }, { Z: 90 }, { X: 88 }, { C: 67 }, { V: 86 }, { B: 66 }, { N: 78 }, { M: 77 }, { "⌫": 46 }]
             ];
             div.createChildNode("div", { class: "keyboardHeader" }, (div) => {
-                div.createChildNode("div", `Blitzdle ${this.isHard ? "🔶" : this.isEasy ? "🟢" : "🟦"}${this.isDaily ? "📆" : this.isCustom ? "🔧" : "🎲"}`);
+                div.createChildNode("div", `${appSettings.settings.showAccuracy && appSettings.settings.showGuesses && appSettings.settings.timer !== "none" ? "" : "Blitzdle "}${this.isHard ? "🔶" : this.isEasy ? "🟢" : "🟦"}${this.isDaily ? "📆" : this.isCustom ? "🔧" : "🎲"}`);
+                if (appSettings.settings.showAccuracy) {
+                    div.createChildNode("div", (div) => {
+                        div.appendChild(this.accuracyElement);
+                    });
+                }
                 if (appSettings.settings.showGuesses) {
                     div.createChildNode("div", (div) => {
                         div.appendChild(this.guessesElement);
@@ -330,6 +345,9 @@ export class MultiWordGame extends EventTarget {
     }
     buildGuessesElement() {
         if (appSettings.settings.showGuesses) this.guessesElement = document.quickElement("div", { class: "guesses" }, this.guesses.length.toString());
+    }
+    buildAccuracyElement() {
+        if (appSettings.settings.showAccuracy) this.accuracyElement = document.quickElement("div", { class: "accuracy" }, `${this.accuracy.toFixed(1)}%`);
     }
     initContainer() {
         this.container.innerHTML = "";

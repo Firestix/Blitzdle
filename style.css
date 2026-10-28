@@ -405,6 +405,9 @@ button:hover {
 .keyboardHeader .guesses::before {
     content: "❓";
 }
+.keyboardHeader .accuracy::before {
+    content: "🎯";
+}
 .wordGameIndex {
     width: 100%;
     text-align: center;

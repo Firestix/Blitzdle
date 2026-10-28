@@ -25,6 +25,7 @@ class AppSettings {
             timer:"normal",
             shareLink:true,
             showGuesses:true,
+            showAccuracy:false,
         }
     }
 }
