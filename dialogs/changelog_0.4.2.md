@@ -1,3 +1,5 @@
+**v0.4.2a:** Modified caching logic
+
 ## v0.4.2
 ### 10/27/2026
 #### New gameplay features
