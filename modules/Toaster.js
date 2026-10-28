@@ -1,3 +1,5 @@
+import { appSettings } from "./AppSettings.js";
+
 export class Toaster extends EventTarget{
     /** @type {HTMLDivElement} */
     elem;
@@ -31,10 +33,12 @@ export class Toaster extends EventTarget{
      * @param {string} message 
      */
     push(type,message) {
-        this.messages.push({type,message});
-        if (!this.active) {
-            this.active = true;
-            this.setToast(this.messages.shift());
+        if (appSettings.settings.enableToast) {
+            this.messages.push({type,message});
+            if (!this.active) {
+                this.active = true;
+                this.setToast(this.messages.shift());
+            }
         }
     }
     unsetToast() {

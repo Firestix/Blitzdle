@@ -563,6 +563,16 @@ async function openSettingsDialog() {
             })
             div.createChildNode("label",{for:"showAccuracy"},"Show accuracy during gameplay")
         })
+        div.createChildNode("div",(div)=>{
+            div.createChildNode("input",{type:"checkbox",id:"enableToast",class:"settingCheck"},(check)=>{
+                check.checked = appSettings.settings.enableToast;
+                check.addEventListener("click",()=>{
+                    appSettings.settings.enableToast = check.checked;
+                    appSettings.store()
+                })
+            })
+            div.createChildNode("label",{for:"enableToast"},"Show popup notifications during gameplay")
+        })
         div.createChildNode("button",{class:"smallButton"},"Refresh Cache",(button)=>{
             button.addEventListener("click",async (e)=>{
                 if (confirm("Are you sure you want to clear the cache?")) {

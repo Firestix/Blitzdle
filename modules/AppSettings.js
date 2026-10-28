@@ -26,6 +26,7 @@ class AppSettings {
             shareLink:true,
             showGuesses:true,
             showAccuracy:false,
+            enableToast:true
         }
     }
 }
