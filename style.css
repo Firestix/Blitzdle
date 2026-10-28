@@ -399,10 +399,10 @@ button:hover {
 .wideKey {
     width: 55px;
 }
-.timer::before {
+.keyboardHeader .timer::before {
     content: "⏱️";
 }
-.guesses::before {
+.keyboardHeader .guesses::before {
     content: "❓";
 }
 .wordGameIndex {
