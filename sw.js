@@ -18,7 +18,6 @@ const precacheResources = [
     "icon.svg",
     "icon192.png",
     "icon512.png",
-    "style.css",
     "dialogs/credits.md",
     "dialogs/how_to_play.md",
     "wordleblitz.txt",
