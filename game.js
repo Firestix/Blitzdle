@@ -534,16 +534,6 @@ async function openSettingsDialog() {
             })
         })
         div.createChildNode("div",(div)=>{
-            div.createChildNode("input",{type:"checkbox",id:"shareLink",class:"settingCheck"},(check)=>{
-                check.checked = appSettings.settings.shareLink;
-                check.addEventListener("click",()=>{
-                    appSettings.settings.shareLink = check.checked;
-                    appSettings.store()
-                })
-            })
-            div.createChildNode("label",{for:"shareLink"},"Add app link to share text")
-        })
-        div.createChildNode("div",(div)=>{
             div.createChildNode("input",{type:"checkbox",id:"showGuesses",class:"settingCheck"},(check)=>{
                 check.checked = appSettings.settings.showGuesses;
                 check.addEventListener("click",()=>{
@@ -572,6 +562,16 @@ async function openSettingsDialog() {
                 })
             })
             div.createChildNode("label",{for:"enableToast"},"Show popup notifications during gameplay")
+        })
+        div.createChildNode("div",(div)=>{
+            div.createChildNode("input",{type:"checkbox",id:"shareLink",class:"settingCheck"},(check)=>{
+                check.checked = appSettings.settings.shareLink;
+                check.addEventListener("click",()=>{
+                    appSettings.settings.shareLink = check.checked;
+                    appSettings.store()
+                })
+            })
+            div.createChildNode("label",{for:"shareLink"},"Add app link to share text")
         })
         div.createChildNode("br");
         div.createChildNode("button",{class:"smallButton warningButton"},"Refresh Cache",(button)=>{
